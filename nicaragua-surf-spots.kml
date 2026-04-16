@@ -1,67 +1,692 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
-<name>Nicaragua Surf Trip — Juillet</name>
-<description>30 spots sud→nord. Cat/marée/fréq/accès en tags.</description>
-<Style id="rivas"><IconStyle><color>ff3c3ce7</color><scale>1.1</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon></IconStyle><LabelStyle><scale>0.9</scale></LabelStyle></Style>
-<Style id="leon"><IconStyle><color>ff0c9ef3</color><scale>1.1</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon></IconStyle><LabelStyle><scale>0.9</scale></LabelStyle></Style>
-<Style id="chinandega"><IconStyle><color>ff60ae27</color><scale>1.1</scale><Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon></IconStyle><LabelStyle><scale>0.9</scale></LabelStyle></Style>
-<Style id="route"><LineStyle><color>ccffffff</color><width>2</width></LineStyle></Style>
-<Folder><name>Rivas</name>
-<Placemark><name>1. Playa Yankee</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Haute<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Facile<br/><b>Type :</b> Beach break — gauche wedgy<br/><b>Taille :</b> 0,9–1,8 m<br/><b>Marée (détail) :</b> Haute<br/><b>Précision GPS :</b> approx [APPROX]]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Haute</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-85.762,11.147,0</coordinates></Point></Placemark>
-<Placemark><name>2. Playa Hermosa (SJDS)</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> Facile<br/><b>Type :</b> Beach break — pics multiples<br/><b>Taille :</b> 0,6–1,8 m<br/><b>Marée (détail) :</b> Mi à haute<br/><b>Précision GPS :</b> approx [APPROX]]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-85.815,11.19,0</coordinates></Point></Placemark>
-<Placemark><name>3. Playa Gigante</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Mixte<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> Facile<br/><b>Type :</b> Beach + reefs secondaires<br/><b>Taille :</b> 1,2–2,1 m<br/><b>Marée (détail) :</b> Mi-marée<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Mixte</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-86.0326,11.3911,0</coordinates></Point></Placemark>
-<Placemark><name>4. Manzanillo</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Bateau<br/><b>Type :</b> Point break gauche 200–300 m<br/><b>Taille :</b> 1,2–2,4 m<br/><b>Marée (détail) :</b> Mi-marée<br/><b>Précision GPS :</b> approx [APPROX]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Bateau</value></Data></ExtendedData><Point><coordinates>-86.0295,11.4335,0</coordinates></Point></Placemark>
-<Placemark><name>5. Playa Colorado</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> haute<br/><b>Accès :</b> Facile<br/><b>Type :</b> Reef — droites/gauches creuses<br/><b>Taille :</b> 1,2–3,6 m<br/><b>Marée (détail) :</b> Mi-marée<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>haute</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-86.0508,11.4085,0</coordinates></Point></Placemark>
-<Placemark><name>6. Panga Drops</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Basse<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Bateau<br/><b>Type :</b> Reef — amplifie la houle<br/><b>Taille :</b> 1,2–3,0 m<br/><b>Marée (détail) :</b> Basse à mi<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Basse</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Bateau</value></Data></ExtendedData><Point><coordinates>-86.056,11.412,0</coordinates></Point></Placemark>
-<Placemark><name>7. Santana</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Haute<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> Facile<br/><b>Type :</b> Beach break wedgy<br/><b>Taille :</b> 0,6–1,2 m<br/><b>Marée (détail) :</b> Mi à haute<br/><b>Précision GPS :</b> approx [APPROX]]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Haute</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-86.08,11.442,0</coordinates></Point></Placemark>
-<Placemark><name>8. Popoyo Main Reef</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> haute<br/><b>Accès :</b> Facile<br/><b>Type :</b> Reef A-frame<br/><b>Taille :</b> 0,6–3,0 m<br/><b>Marée (détail) :</b> Mi<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>haute</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-86.1249,11.4701,0</coordinates></Point></Placemark>
-<Placemark><name>9. Popoyo Outer Reef</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Haute<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Bateau<br/><b>Type :</b> Slab lourd, expert<br/><b>Taille :</b> 3,5 m+<br/><b>Marée (détail) :</b> Mi à haute<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Haute</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Bateau</value></Data></ExtendedData><Point><coordinates>-86.138,11.465,0</coordinates></Point></Placemark>
-<Placemark><name>10. Lance's Left</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Basse<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> Bateau<br/><b>Type :</b> Point break gauche long<br/><b>Taille :</b> 0,6–3,6 m<br/><b>Marée (détail) :</b> Basse à mi<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Basse</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>Bateau</value></Data></ExtendedData><Point><coordinates>-86.1675,11.5044,0</coordinates></Point></Placemark>
-<Placemark><name>11. Playgrounds</name><styleUrl>#rivas</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Bateau<br/><b>Type :</b> Reef en galets — pic A-frame<br/><b>Taille :</b> 0,9–2,4 m<br/><b>Marée (détail) :</b> Matin<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Bateau</value></Data></ExtendedData><Point><coordinates>-86.22,11.555,0</coordinates></Point></Placemark>
+<name>Nicaragua Surf Trip — Juillet (33 spots)</name>
+<description>Sud→nord : Rivas → León → Chinandega. Niveau avancé.</description>
+<Style id="Rivas">
+<IconStyle>
+<color>ff4c4ce7</color><scale>1.1</scale>
+<Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>
+</IconStyle>
+<LabelStyle><scale>0.9</scale></LabelStyle>
+</Style>
+<Style id="León">
+<IconStyle>
+<color>ff129cf3</color><scale>1.1</scale>
+<Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>
+</IconStyle>
+<LabelStyle><scale>0.9</scale></LabelStyle>
+</Style>
+<Style id="Chinandega">
+<IconStyle>
+<color>ff60ae27</color><scale>1.1</scale>
+<Icon><href>http://maps.google.com/mapfiles/kml/paddle/wht-blank.png</href></Icon>
+</IconStyle>
+<LabelStyle><scale>0.9</scale></LabelStyle>
+</Style>
+<Folder>
+<name>Rivas</name>
+<Placemark>
+<name>1. Sally Ann's</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Haute</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Haute<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Point break gauche long big-wave only — expert only. Source unique.
+]]></description>
+<Point><coordinates>-85.80026,11.131363,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>2. Playa Hermosa (SJDS)</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Beach break pics multiples 1.5km. Populaire mais étalé.
+]]></description>
+<Point><coordinates>-85.815,11.19,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>3. Playa Gigante</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Mixte</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Mixte<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Beach + reefs secondaires. Plan B quand le sud est maxé.
+]]></description>
+<Point><coordinates>-86.0326,11.3911,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>4. Playa Colorado</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Haute</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Haute<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Reef signature. Tubes consistants, 50+ surfeurs en peak.
+]]></description>
+<Point><coordinates>-86.0508,11.4085,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>5. Panga Drops</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Basse</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Bateau</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Basse<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Bateau<br><br>
+Reef fer-à-cheval amplifie la houle. Bateau ou 15min walk.
+]]></description>
+<Point><coordinates>-86.056,11.412,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>6. Manzanillo</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Bateau</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Bateau<br><br>
+Point gauche SSW only + mi-marée. Bateau depuis Hide & Seek.
+]]></description>
+<Point><coordinates>-86.0295,11.4335,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>7. Playa Rosada</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Basse</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Bateau</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Basse<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Bateau<br><br>
+Point gauche court rapide sur reef urchins. Basse/mi tide — haute cache rochers.
+]]></description>
+<Point><coordinates>-86.084362,11.433898,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>8. Santana</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Haute</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Haute<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Beach wedgy creux. 2 premiers pics chargés.
+]]></description>
+<Point><coordinates>-86.08,11.442,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>9. Popoyo Outer Reef</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Haute</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Bateau</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Haute<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Bateau<br><br>
+Big-wave slab 800m au large. Expert uniquement.
+]]></description>
+<Point><coordinates>-86.138,11.465,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>10. Popoyo Main Reef</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Haute</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Haute<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Vague la plus consistante du pays. A-frame shifty.
+]]></description>
+<Point><coordinates>-86.1249,11.4701,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>11. Lance's Left</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Basse</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Bateau</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Basse<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Bateau<br><br>
+Gauche 500m, walls rippables. Bateau depuis Astillero.
+]]></description>
+<Point><coordinates>-86.1675,11.5044,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>12. Playgrounds</name>
+<styleUrl>#Rivas</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Bateau</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Rivas<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Bateau<br><br>
+Reef galets split peaks. Peut être chargé malgré le trajet.
+]]></description>
+<Point><coordinates>-86.22,11.555,0</coordinates></Point>
+</Placemark>
 </Folder>
-<Folder><name>León</name>
-<Placemark><name>12. El Tránsito</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> 4x4<br/><b>Type :</b> Beach break très consistant<br/><b>Taille :</b> 0,9–2,1 m<br/><b>Marée (détail) :</b> Mi-marée<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>4x4</value></Data></ExtendedData><Point><coordinates>-86.7053,12.0542,0</coordinates></Point></Placemark>
-<Placemark><name>13. Asuchillo</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> 4x4<br/><b>Type :</b> Beach break sur banc de sable<br/><b>Taille :</b> 0,9–1,5 m<br/><b>Marée (détail) :</b> Toutes<br/><b>Précision GPS :</b> approx [APPROX]]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>4x4</value></Data></ExtendedData><Point><coordinates>-86.718,12.084,0</coordinates></Point></Placemark>
-<Placemark><name>14. El Velero / Huehuete</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Facile<br/><b>Type :</b> Beach break<br/><b>Taille :</b> 0,6–1,5 m<br/><b>Marée (détail) :</b> N/A<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-86.75,12.14,0</coordinates></Point></Placemark>
-<Placemark><name>15. Shacks</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Basse<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Facile<br/><b>Type :</b> Reef gauche rapide<br/><b>Taille :</b> 0,9–1,8 m<br/><b>Marée (détail) :</b> Basse<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Basse</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-86.753,12.158,0</coordinates></Point></Placemark>
-<Placemark><name>16. Miramar (Punta)</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> Facile<br/><b>Type :</b> Reef devant le camp<br/><b>Taille :</b> 0,9–2,1 m<br/><b>Marée (détail) :</b> Toutes<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-86.7553,12.1625,0</coordinates></Point></Placemark>
-<Placemark><name>17. Pipes</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> Facile<br/><b>Type :</b> Pic en A<br/><b>Taille :</b> 0,9–2,1 m<br/><b>Marée (détail) :</b> Mi<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-86.756,12.1635,0</coordinates></Point></Placemark>
-<Placemark><name>18. Outside Miramar</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Basse<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> Bateau<br/><b>Type :</b> Point gauche extérieur + barrels<br/><b>Taille :</b> 1,5–3,0 m<br/><b>Marée (détail) :</b> Basse<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Basse</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>Bateau</value></Data></ExtendedData><Point><coordinates>-86.765,12.163,0</coordinates></Point></Placemark>
-<Placemark><name>19. Puerto Sandino / Freight Trains</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Basse<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Bateau<br/><b>Type :</b> Gauche 300 m sur reef peu profond<br/><b>Taille :</b> 1,2–3,0 m<br/><b>Marée (détail) :</b> Basse à mi<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Basse</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Bateau</value></Data></ExtendedData><Point><coordinates>-86.7601,12.1957,0</coordinates></Point></Placemark>
-<Placemark><name>20. Salinas Grandes</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> 4x4<br/><b>Type :</b> Beach break isolé<br/><b>Taille :</b> 0,9–1,8 m<br/><b>Marée (détail) :</b> Variable<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>4x4</value></Data></ExtendedData><Point><coordinates>-86.8389,12.2592,0</coordinates></Point></Placemark>
-<Placemark><name>21. Las Peñitas / Poneloya</name><styleUrl>#leon</styleUrl><description><![CDATA[<b>Catégorie :</b> Mixte<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> Facile<br/><b>Type :</b> Beach gauche + reef/point<br/><b>Taille :</b> 0,6–1,8 m<br/><b>Marée (détail) :</b> N/A<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Mixte</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-87.0167,12.3667,0</coordinates></Point></Placemark>
+<Folder>
+<name>León</name>
+<Placemark>
+<name>13. Chiggas</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Haute</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Haute<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Reef high-tide, tient toute taille (3-15ft). Gran Pacifica Resort.
+]]></description>
+<Point><coordinates>-86.61917,11.905297,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>14. Hemorrhoids</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Haute</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Haute<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Gauche rapide devant Gran Pacifica. Eau douteuse. Often crowded.
+]]></description>
+<Point><coordinates>-86.61957,11.924235,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>15. El Tránsito</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>4x4 / piste</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> 4x4 / piste<br><br>
+Beach très consistant. Juillet = meilleur mois. Piste 13km.
+]]></description>
+<Point><coordinates>-86.7053,12.0542,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>16. Asuchillo</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>4x4 / piste</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> 4x4 / piste<br><br>
+Sandbar ludique. Matins glassy offshore.
+]]></description>
+<Point><coordinates>-86.718,12.084,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>17. El Velero / Huehuete</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Village pêcheurs confidentiel. Sources limitées, à re-vérifier.
+]]></description>
+<Point><coordinates>-86.75,12.14,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>18. Shacks</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Reef gauche rapide sharp. Mi tide only (fenêtre courte).
+]]></description>
+<Point><coordinates>-86.753,12.158,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>19. Miramar (Punta)</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Reef principal devant Miramar Surf Camp.
+]]></description>
+<Point><coordinates>-86.7553,12.1625,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>20. Outside Miramar</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Basse</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Bateau</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Basse<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Bateau<br><br>
+Point gauche extérieur, gros swell. Shuttle bateau.
+]]></description>
+<Point><coordinates>-86.765,12.163,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>21. Pipes</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Basse</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Basse<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Pic A-frame avec gauche rapide. Basse tide préférée.
+]]></description>
+<Point><coordinates>-86.756,12.1635,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>22. Puerto Sandino / Freight Trains</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Haute</value></Data>
+<Data name="acces"><value>Bateau</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Haute<br>
+<b>Accès :</b> Bateau<br><br>
+Gauche jusqu'à 400m. Often crowded + vibe visiteurs/expats. Black Holes rips.
+]]></description>
+<Point><coordinates>-86.7601,12.1957,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>23. Salinas Grandes</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>4x4 / piste</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> 4x4 / piste<br><br>
+Beach isolé, fickle. 4x4 en saison des pluies.
+]]></description>
+<Point><coordinates>-86.8389,12.2592,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>24. Las Peñitas / Poneloya</name>
+<styleUrl>#León</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Mixte</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> León<br>
+<b>Catégorie :</b> Mixte<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Beach + reef gros swell. Rarement surfé per Stormrider.
+]]></description>
+<Point><coordinates>-87.0167,12.3667,0</coordinates></Point>
+</Placemark>
 </Folder>
-<Folder><name>Chinandega</name>
-<Placemark><name>22. La Isla Aserradores</name><styleUrl>#chinandega</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> Bateau<br/><b>Type :</b> Point break gauche<br/><b>Taille :</b> 1,2–3,0 m<br/><b>Marée (détail) :</b> Variable<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>Bateau</value></Data></ExtendedData><Point><coordinates>-87.37,12.625,0</coordinates></Point></Placemark>
-<Placemark><name>23. Powder Puffs</name><styleUrl>#chinandega</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Haute<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> 4x4<br/><b>Type :</b> Pic sud de The Boom<br/><b>Taille :</b> 1,2–2,4 m<br/><b>Marée (détail) :</b> Haute<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Haute</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>4x4</value></Data></ExtendedData><Point><coordinates>-87.349,12.629,0</coordinates></Point></Placemark>
-<Placemark><name>24. The Boom (Aserradores)</name><styleUrl>#chinandega</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Haute<br/><b>Fréquentation :</b> haute<br/><b>Accès :</b> 4x4<br/><b>Type :</b> Pic A-frame dredging<br/><b>Taille :</b> 0,9–2,4 m<br/><b>Marée (détail) :</b> Haute<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Haute</value></Data><Data name="frequentation"><value>haute</value></Data><Data name="acces"><value>4x4</value></Data></ExtendedData><Point><coordinates>-87.3484,12.6306,0</coordinates></Point></Placemark>
-<Placemark><name>25. Coconuts</name><styleUrl>#chinandega</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Haute<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> 4x4<br/><b>Type :</b> Pic nord de The Boom<br/><b>Taille :</b> 1,2–2,4 m<br/><b>Marée (détail) :</b> Haute<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Haute</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>4x4</value></Data></ExtendedData><Point><coordinates>-87.348,12.632,0</coordinates></Point></Placemark>
-<Placemark><name>26. Rocky Point</name><styleUrl>#chinandega</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> moyenne<br/><b>Accès :</b> 4x4<br/><b>Type :</b> Reef triangulaire<br/><b>Taille :</b> 1,2–2,4 m<br/><b>Marée (détail) :</b> Mi à haute<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>moyenne</value></Data><Data name="acces"><value>4x4</value></Data></ExtendedData><Point><coordinates>-87.395,12.64,0</coordinates></Point></Placemark>
-<Placemark><name>27. Meatgrinders</name><styleUrl>#chinandega</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> 4x4<br/><b>Type :</b> Reef gauche peu profond, slab<br/><b>Taille :</b> 1,2–2,4 m<br/><b>Marée (détail) :</b> Mi à haute<br/><b>Précision GPS :</b> offshore [offset reef]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>4x4</value></Data></ExtendedData><Point><coordinates>-87.398,12.643,0</coordinates></Point></Placemark>
-<Placemark><name>28. Santa María del Mar</name><styleUrl>#chinandega</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Facile<br/><b>Type :</b> Beach break 1,5 km<br/><b>Taille :</b> 0,9–2,1 m<br/><b>Marée (détail) :</b> N/A<br/><b>Précision GPS :</b> approx [APPROX]]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-87.402,12.65,0</coordinates></Point></Placemark>
-<Placemark><name>29. Jiquilillo</name><styleUrl>#chinandega</styleUrl><description><![CDATA[<b>Catégorie :</b> Beach-break<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Facile<br/><b>Type :</b> Beach break sur bancs de sable<br/><b>Taille :</b> 0,6–1,5 m<br/><b>Marée (détail) :</b> Faible<br/><b>Précision GPS :</b> verified]]></description><ExtendedData><Data name="categorie"><value>Beach-break</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-87.4424,12.7335,0</coordinates></Point></Placemark>
-<Placemark><name>30. Coco Loco</name><styleUrl>#chinandega</styleUrl><description><![CDATA[<b>Catégorie :</b> Reef<br/><b>Marée idéale :</b> Mi-marée<br/><b>Fréquentation :</b> basse<br/><b>Accès :</b> Facile<br/><b>Type :</b> Reef gauche, ludique<br/><b>Taille :</b> 0,9–2,1 m<br/><b>Marée (détail) :</b> Toutes<br/><b>Précision GPS :</b> approx [APPROX]]]></description><ExtendedData><Data name="categorie"><value>Reef</value></Data><Data name="maree"><value>Mi-marée</value></Data><Data name="frequentation"><value>basse</value></Data><Data name="acces"><value>Facile</value></Data></ExtendedData><Point><coordinates>-87.495,12.79,0</coordinates></Point></Placemark>
+<Folder>
+<name>Chinandega</name>
+<Placemark>
+<name>25. La Isla Aserradores / The Island</name>
+<styleUrl>#Chinandega</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>Bateau</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Chinandega<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> Bateau<br><br>
+Point gauche, swell magnet 2 sections. Non-Stormrider, à re-vérifier.
+]]></description>
+<Point><coordinates>-87.37,12.625,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>26. Powder Puffs</name>
+<styleUrl>#Chinandega</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Haute</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>4x4 / piste</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Chinandega<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Haute<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> 4x4 / piste<br><br>
+Pic sud The Boom tolérant. Non-Stormrider.
+]]></description>
+<Point><coordinates>-87.349,12.629,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>27. The Boom (Aserradores)</name>
+<styleUrl>#Chinandega</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Haute</value></Data>
+<Data name="frequentation"><value>Haute</value></Data>
+<Data name="acces"><value>4x4 / piste</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Chinandega<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Haute<br>
+<b>Fréquentation :</b> Haute<br>
+<b>Accès :</b> 4x4 / piste<br><br>
+Beach classe mondiale, mini Puerto Escondido. 3 camps en peak. Non-Stormrider.
+]]></description>
+<Point><coordinates>-87.3484,12.6306,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>28. Coconuts</name>
+<styleUrl>#Chinandega</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Haute</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>4x4 / piste</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Chinandega<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Haute<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> 4x4 / piste<br><br>
+Pic nord The Boom. Non-Stormrider.
+]]></description>
+<Point><coordinates>-87.348,12.632,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>29. Rocky Point</name>
+<styleUrl>#Chinandega</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Moyenne</value></Data>
+<Data name="acces"><value>4x4 / piste</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Chinandega<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Moyenne<br>
+<b>Accès :</b> 4x4 / piste<br><br>
+Reef triangulaire (gauches + droites). Rocky Point Estates.
+]]></description>
+<Point><coordinates>-87.395,12.64,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>30. Meatgrinders</name>
+<styleUrl>#Chinandega</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>4x4 / piste</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Chinandega<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> 4x4 / piste<br><br>
+Top 5 Nica. Shallow reef slab. Expert uniquement.
+]]></description>
+<Point><coordinates>-87.398,12.643,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>31. Santa María del Mar</name>
+<styleUrl>#Chinandega</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Chinandega<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Beach 1.5km, plus mellow que The Boom. Non-Stormrider.
+]]></description>
+<Point><coordinates>-87.402,12.65,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>32. Jiquilillo</name>
+<styleUrl>#Chinandega</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Beach-break</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Chinandega<br>
+<b>Catégorie :</b> Beach-break<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Sandbars multi-peaks. Crocodiles dans l'estuaire. 42% jours clean en juillet.
+]]></description>
+<Point><coordinates>-87.4424,12.7335,0</coordinates></Point>
+</Placemark>
+<Placemark>
+<name>33. Coco Loco</name>
+<styleUrl>#Chinandega</styleUrl>
+<ExtendedData>
+<Data name="categorie"><value>Reef</value></Data>
+<Data name="maree"><value>Mi-marée</value></Data>
+<Data name="frequentation"><value>Basse</value></Data>
+<Data name="acces"><value>Facile (voiture)</value></Data>
+</ExtendedData>
+<description><![CDATA[
+<b>Région :</b> Chinandega<br>
+<b>Catégorie :</b> Reef<br>
+<b>Marée idéale :</b> Mi-marée<br>
+<b>Fréquentation :</b> Basse<br>
+<b>Accès :</b> Facile (voiture)<br><br>
+Reef gauche ludique consistant. Proche Padre Ramos.
+]]></description>
+<Point><coordinates>-87.495,12.79,0</coordinates></Point>
+</Placemark>
 </Folder>
-<Placemark><name>Itinéraire Sud→Nord</name><styleUrl>#route</styleUrl><LineString><tessellate>1</tessellate><coordinates>
--85.762,11.147,0
+<Placemark>
+<name>Itinéraire sud→nord</name>
+<Style><LineStyle><color>ff00ffff</color><width>2</width></LineStyle></Style>
+<LineString>
+<tessellate>1</tessellate>
+<coordinates>
+-85.80026,11.131363,0
 -85.815,11.19,0
 -86.0326,11.3911,0
--86.0295,11.4335,0
 -86.0508,11.4085,0
 -86.056,11.412,0
+-86.0295,11.4335,0
+-86.084362,11.433898,0
 -86.08,11.442,0
--86.1249,11.4701,0
 -86.138,11.465,0
+-86.1249,11.4701,0
 -86.1675,11.5044,0
 -86.22,11.555,0
+-86.61917,11.905297,0
+-86.61957,11.924235,0
 -86.7053,12.0542,0
 -86.718,12.084,0
 -86.75,12.14,0
 -86.753,12.158,0
 -86.7553,12.1625,0
--86.756,12.1635,0
 -86.765,12.163,0
+-86.756,12.1635,0
 -86.7601,12.1957,0
 -86.8389,12.2592,0
 -87.0167,12.3667,0
@@ -74,5 +699,7 @@
 -87.402,12.65,0
 -87.4424,12.7335,0
 -87.495,12.79,0
-</coordinates></LineString></Placemark>
+</coordinates>
+</LineString>
+</Placemark>
 </Document></kml>
