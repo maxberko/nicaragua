@@ -15,7 +15,7 @@ Carte interactive des 33 meilleurs spots de surf au Nicaragua pour juillet, nive
 
 ## 🏄 Spots inclus (33)
 
-- **Rivas (sud, 12)** : Sally Ann's, Hermosa SJDS, Gigante, Colorado, Panga Drops, Manzanillo, Playa Rosada, Santana, Popoyo Outer, Popoyo Main, Lance's Left, Playgrounds
+- **Rivas (sud, 12)** : Sally Ann's, Hermosa SJDS, Manzanillo, Gigante, Colorado, Panga Drops, Playa Rosada, Santana, Popoyo Outer, Popoyo Main, Lance's Left, Playgrounds
 - **León (centre, 12)** : Chiggas, Hemorrhoids, El Tránsito, Asuchillo, El Velero, Shacks, Miramar Punta, Outside Miramar, Pipes, Puerto Sandino (Freight Trains), Salinas Grandes, Las Peñitas/Poneloya
 - **Chinandega (nord, 9)** : La Isla Aserradores, Powder Puffs, The Boom, Coconuts, Rocky Point, Meatgrinders, Santa María del Mar, Jiquilillo, Coco Loco
 

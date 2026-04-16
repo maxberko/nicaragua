@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vérification coords v3 — avec références</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  body { margin:0; font-family:system-ui,sans-serif; background:#1a1a1a; color:#eee; }
+  h1 { text-align:center; padding:12px 0 4px; margin:0; font-size:1.2em; }
+  .info { text-align:center; color:#999; margin:4px 16px 8px; font-size:0.85em; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(500px,1fr)); gap:8px; padding:8px; }
+  .zone { background:#222; border-radius:8px; overflow:hidden; }
+  .zone h2 { margin:0; padding:8px 12px; font-size:0.95em; background:#333; }
+  .zone h2 span { color:#999; font-size:0.8em; font-weight:normal; display:block; }
+  .map { height:380px; }
+  .legend { display:flex; gap:16px; justify-content:center; padding:8px; font-size:0.8em; }
+  .legend span { display:flex; align-items:center; gap:4px; }
+  .dot { width:12px; height:12px; border-radius:50%; border:1px solid #000; }
+</style>
+</head>
+<body>
+<h1>Vérification coordonnées v3</h1>
+<p class="info">
+  Carrés rouges = points de référence (villages/DB). Cercles = spots surf.<br>
+  Verts = Stormrider verified | Jaunes = approx (estimation) | Bleus = offshore
+</p>
+<div class="legend">
+  <span><span class="dot" style="background:#22c55e"></span> Stormrider verified</span>
+  <span><span class="dot" style="background:#f59e0b"></span> Approx (estimation LLM)</span>
+  <span><span class="dot" style="background:#3b82f6"></span> Offshore (intentionnel)</span>
+  <span><span class="dot" style="background:#ef4444;border-radius:2px"></span> Ref (village/DB)</span>
+</div>
+<div class="grid" id="grid"></div>
+<script>
+const SAT = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+const LBL = "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}";
+const zones = [
+  {title:"Asuchillo + El Tránsito", subtitle:"Asuchillo ~500m NNW d'El Tránsito",
+   center:[12.056,-86.71], zoom:15,
+   spots:[{n:15, name:"El Tránsito", lat:12.05312, lon:-86.707388, posType:"verified"}, {n:16, name:"Asuchillo", lat:12.058, lon:-86.712, posType:"approx"}]},
+  {title:"Playa Aserradores / The Boom", subtitle:"Ref: Aposentillo village = 12.633, -87.367. Beach ~300m W du village.",
+   center:[12.63,-87.378], zoom:15,
+   spots:[{n:25, name:"La Isla Aserradores / The Island", lat:12.62, lon:-87.395, posType:"offshore"}, {n:26, name:"Powder Puffs", lat:12.625, lon:-87.373, posType:"approx"}, {n:27, name:"The Boom (Aserradores)", lat:12.63, lon:-87.375, posType:"approx"}, {n:28, name:"Coconuts", lat:12.634, lon:-87.377, posType:"approx"}, {n:0, name:"Aposentillo village (ref)", lat:12.6333, lon:-87.3667, posType:"ref"}]},
+  {title:"Punta Aposentillo headland", subtitle:"Rocky Point, Meatgrinders, Santa María — reefs sur/autour du headland",
+   center:[12.648,-87.385], zoom:15,
+   spots:[{n:29, name:"Rocky Point", lat:12.641, lon:-87.383, posType:"approx"}, {n:30, name:"Meatgrinders", lat:12.647, lon:-87.385, posType:"approx"}, {n:31, name:"Santa María del Mar", lat:12.654, lon:-87.387, posType:"approx"}, {n:0, name:"Aposentillo village (ref)", lat:12.6333, lon:-87.3667, posType:"ref"}]},
+  {title:"Jiquilillo", subtitle:"Ref: village = 12.733, -87.433. Beach slightly W.",
+   center:[12.734,-87.438], zoom:14,
+   spots:[{n:32, name:"Jiquilillo", lat:12.734, lon:-87.438, posType:"approx"}, {n:0, name:"Jiquilillo village (ref)", lat:12.7333, lon:-87.4333, posType:"ref"}]},
+  {title:"Coco Loco / Padre Ramos", subtitle:"Near estuary mouth. Padre Ramos reserve 12.76-12.84",
+   center:[12.79,-87.495], zoom:14,
+   spots:[{n:33, name:"Coco Loco", lat:12.79, lon:-87.495, posType:"approx"}]},
+];
+
+const COLORS = {verified:"#22c55e", approx:"#f59e0b", offshore:"#3b82f6", ref:"#ef4444"};
+const grid = document.getElementById("grid");
+zones.forEach((z,i) => {
+  const div = document.createElement("div"); div.className = "zone";
+  const h2 = document.createElement("h2");
+  h2.innerHTML = z.title + "<span>" + z.subtitle + "</span>";
+  div.appendChild(h2);
+  const md = document.createElement("div"); md.className = "map"; md.id = "m"+i;
+  div.appendChild(md); grid.appendChild(div);
+  setTimeout(() => {
+    const map = L.map(md.id).setView(z.center, z.zoom);
+    L.tileLayer(SAT, {maxZoom:19}).addTo(map);
+    L.tileLayer(LBL, {maxZoom:19, opacity:0.5}).addTo(map);
+    z.spots.forEach(s => {
+      const c = COLORS[s.posType] || "#fff";
+      const isRef = s.posType === "ref";
+      const icon = L.divIcon({
+        html: '<div style="background:'+c+';color:#000;font-weight:700;font-size:'+(isRef?'10':'12')+'px;border:2px solid #000;border-radius:'+(isRef?'3':'50')+'%;width:'+(isRef?'20':'24')+'px;height:'+(isRef?'20':'24')+'px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 6px rgba(0,0,0,0.7);">'+(isRef?'R':s.n)+'</div>',
+        className:"", iconSize:[24,24], iconAnchor:[12,12]
+      });
+      L.marker([s.lat, s.lon], {icon}).addTo(map)
+        .bindPopup("<b>"+(isRef?"REF: ":"#"+s.n+" ")+s.name+"</b><br>"+s.lat.toFixed(5)+", "+s.lon.toFixed(5)+"<br>"+s.posType);
+    });
+  }, i*150);
+});
+</script>
+</body>
+</html>
