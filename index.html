@@ -696,6 +696,74 @@ function fmtReading(r) {
   const arrow = (dir != null) ? '<span class="buoy-arrow" style="transform:rotate(' + ((dir + 180) % 360) + 'deg);">↑</span>' : '';
   return { h: h, p: p, dirStr: dirStr, arrow: arrow };
 }
+// === SWELL MATCH SCORING ===
+// Parse "1,2–2,4 m" → {min:1.2, max:2.4}. Supporte virgules décimales et plusieurs types de tirets.
+function parseSizeRange(sizeStr) {
+  if (!sizeStr) return null;
+  const m = String(sizeStr).match(/(\d+(?:[.,]\d+)?)\s*[–\-−—]\s*(\d+(?:[.,]\d+)?)/);
+  if (!m) return null;
+  const lo = parseFloat(m[1].replace(',', '.'));
+  const hi = parseFloat(m[2].replace(',', '.'));
+  if (!isFinite(lo) || !isFinite(hi) || lo > hi) return null;
+  return { min: lo, max: hi };
+}
+// Triangle : 1.0 dans la range, décline linéairement vers 0 à 40% hors-range (côté haut plus strict).
+function sizeScore(range, h) {
+  if (!range || h == null) return null;
+  const { min, max } = range;
+  if (h >= min && h <= max) return 1;
+  if (h < min) return Math.max(0, 1 - (min - h) / (min * 0.6));
+  return Math.max(0, 1 - (h - max) / (max * 0.4));
+}
+// swellDir : number (tolérance ±30°) | [min,max] | undefined (neutre = 1).
+// Gère le wrap 360°. 0 à 60° hors-bord.
+function directionScore(swellDir, d) {
+  if (swellDir == null || d == null) return 1;
+  let lo, hi;
+  if (Array.isArray(swellDir)) { [lo, hi] = swellDir; }
+  else { lo = swellDir - 30; hi = swellDir + 30; }
+  const norm = x => ((x % 360) + 360) % 360;
+  const dn = norm(d), loN = norm(lo), hiN = norm(hi);
+  const inRange = loN <= hiN ? (dn >= loN && dn <= hiN) : (dn >= loN || dn <= hiN);
+  if (inRange) return 1;
+  const circDist = (a, b) => { const x = Math.abs(norm(a) - norm(b)); return Math.min(x, 360 - x); };
+  const edge = Math.min(circDist(dn, loN), circDist(dn, hiN));
+  return Math.max(0, 1 - edge / 60);
+}
+function computeSpotScore(spot) {
+  if (!buoyData) return null;
+  const nb = nearestBuoy(spot.lat, spot.lon);
+  if (!nb) return null;
+  const r = nb.buoy.last_reading;
+  if (!r) return null;
+  const ss = sizeScore(parseSizeRange(spot.size), r.significient_height);
+  const ds = directionScore(spot.swellDir, r.direction);
+  if (ss == null) return null;
+  return { size: ss, direction: ds, total: ss * ds };
+}
+// HSL rouge (0°) → vert (120°), sat 75%, L 45% pour lisibilité sur fond imagerie Esri.
+function scoreToColor(score) {
+  const s = Math.max(0, Math.min(1, score));
+  return 'hsl(' + Math.round(s * 120) + ' 75% 45%)';
+}
+// Applique la couleur de match à chaque marker de spot in-place (inline style > CSS région).
+function applyMatchColoring() {
+  markers.forEach((m, idx) => {
+    const el = m.getElement && m.getElement();
+    if (!el) return;
+    const inner = el.querySelector('.marker-num');
+    if (!inner) return;
+    const s = computeSpotScore(spots[idx]);
+    if (s == null) {
+      inner.style.background = '';
+      inner.removeAttribute('data-score');
+    } else {
+      inner.style.background = scoreToColor(s.total);
+      inner.dataset.score = s.total.toFixed(2);
+    }
+  });
+}
+
 function buildBuoyBlock(spot) {
   if (buoyLoadError) {
     return '<div class="buoy-block err"><h3>🌊 Live swell</h3>' +
@@ -710,6 +778,14 @@ function buildBuoyBlock(spot) {
     '<div style="font-size:12px;">Aucune bouée à proximité.</div></div>';
   const r = nb.buoy.last_reading || {};
   const f = fmtReading(r);
+  const sc = computeSpotScore(spot);
+  const scoreLine = sc ? (
+    '<div class="buoy-meta" style="margin-top:6px;">' +
+      '<strong style="color:' + scoreToColor(sc.total) + ';">Match ' + Math.round(sc.total * 100) + '%</strong>' +
+      ' · taille ' + Math.round(sc.size * 100) + '%' +
+      (spot.swellDir != null ? ' · dir ' + Math.round(sc.direction * 100) + '%' : ' · dir n/a') +
+    '</div>'
+  ) : '';
   return '<div class="buoy-block">' +
     '<h3>🌊 Live swell — bouée ' + nb.buoy.name + ' (' + nb.buoy.source + ')</h3>' +
     '<div class="buoy-grid">' +
@@ -719,6 +795,7 @@ function buildBuoyBlock(spot) {
     '</div>' +
     '<div class="buoy-meta">À ' + nb.distanceKm.toFixed(0) + ' km · ' +
       (r.time ? 'lecture ' + ageStr(r.time) : 'pas de donnée') + '</div>' +
+    scoreLine +
   '</div>';
 }
 function placeBuoyMarkers() {
@@ -782,6 +859,7 @@ function refreshOpenSidebar() {
   const metaTs = snap.meta && snap.meta.timestamp ? new Date(snap.meta.timestamp) : new Date();
   buoyData = { buoys: (snap.data && snap.data.buoys) || [], fetchedAt: metaTs };
   placeBuoyMarkers();
+  applyMatchColoring();
   refreshOpenSidebar();
 })();
 
@@ -819,6 +897,8 @@ function applyFilters() {
   routeLine.setLatLngs(visibleLatLngs);
   visibleCountEl.textContent = '(' + n + ')';
   visibleCountPanelEl.textContent = n;
+  // Re-apply match coloring — removeLayer/addTo recrée le DOM, l'inline style est perdu.
+  applyMatchColoring();
 }
 
 function updateCounts() {
