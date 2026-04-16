@@ -740,7 +740,7 @@ function placeBuoyMarkers() {
         '</svg></div>',
       iconSize: [26, 26], iconAnchor: [13, 13]
     });
-    const m = L.marker([lat, lon], { icon, zIndexOffset: -100 });
+    const m = L.marker([lat, lon], { icon, zIndexOffset: 1000 });
     const r = b.last_reading || {};
     const f = fmtReading(r);
     m.bindPopup(
