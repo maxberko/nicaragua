@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nicaragua Surf — YouTube ID Helper</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, system-ui, sans-serif; background: #0f0f0f; color: #e0e0e0; padding: 20px; max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 6px; color: #fff; }
+  .sub { color: #888; font-size: 0.85rem; margin-bottom: 20px; line-height: 1.5; }
+  .sub code { background: #222; padding: 2px 6px; border-radius: 3px; color: #4fc3f7; }
+  .spot { padding: 12px 14px; border-bottom: 1px solid #222; transition: background 0.15s; }
+  .spot:hover { background: #1a1a1a; }
+  .spot.has-id { background: #0d2818; }
+  .spot.has-id:hover { background: #0f3320; }
+  .spot-header { display: flex; align-items: center; gap: 12px; }
+  .num { color: #666; font-size: 0.8rem; width: 24px; text-align: right; flex-shrink: 0; }
+  .name { flex: 1; font-size: 0.95rem; min-width: 0; }
+  .region { color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; width: 90px; flex-shrink: 0; }
+  .yt-link { color: #ff4444; text-decoration: none; font-size: 0.8rem; flex-shrink: 0; width: 24px; text-align: center; }
+  .vid-count { color: #4caf50; font-size: 0.75rem; flex-shrink: 0; min-width: 20px; }
+  .add-btn { background: none; border: 1px dashed #444; color: #888; padding: 3px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex-shrink: 0; }
+  .add-btn:hover { border-color: #4fc3f7; color: #4fc3f7; }
+  .videos { margin-top: 8px; margin-left: 36px; display: flex; flex-direction: column; gap: 6px; }
+  .vid-row { display: flex; align-items: center; gap: 8px; }
+  .vid-row input { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 5px 8px; border-radius: 4px; width: 180px; font-family: monospace; font-size: 0.82rem; }
+  .vid-row input:focus { outline: none; border-color: #4fc3f7; }
+  .vid-row input.valid { border-color: #4caf50; }
+  .vid-row .caption-input { font-family: -apple-system, system-ui, sans-serif; width: 220px; font-size: 0.82rem; background: #1a1a1a; border: 1px solid #333; color: #aaa; padding: 5px 8px; border-radius: 4px; }
+  .vid-row .caption-input:focus { outline: none; border-color: #4fc3f7; color: #fff; }
+  .vid-thumb { width: 48px; height: 36px; border-radius: 3px; flex-shrink: 0; cursor: pointer; object-fit: cover; background: #222; }
+  .remove-btn { background: none; border: none; color: #555; cursor: pointer; font-size: 1rem; padding: 0 4px; }
+  .remove-btn:hover { color: #ff4444; }
+  .actions { display: flex; gap: 10px; margin: 20px 0; position: sticky; top: 0; background: #0f0f0f; padding: 12px 0; z-index: 10; border-bottom: 1px solid #333; }
+  button { background: #4fc3f7; color: #000; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+  button:hover { background: #29b6f6; }
+  button.secondary { background: #333; color: #e0e0e0; }
+  button.secondary:hover { background: #444; }
+  .count { color: #888; font-size: 0.85rem; margin-left: auto; align-self: center; }
+  #output { display: none; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 16px; margin-top: 16px; max-height: 400px; overflow: auto; }
+  #output pre { font-size: 0.8rem; color: #4fc3f7; white-space: pre-wrap; word-break: break-all; }
+  .tip { background: #1a1a2e; border: 1px solid #333; border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.5; }
+  .tip b { color: #4fc3f7; }
+</style>
+</head>
+<body>
+
+<h1>🏄 Nicaragua Surf Spots — YouTube Video IDs</h1>
+<p class="sub">
+  Pour chaque spot, ajoute une ou plusieurs vidéos YouTube.<br>
+  L'ID = les 11 caractères après <code>v=</code> dans l'URL. Tu peux coller l'URL complète, l'ID sera extrait auto.
+</p>
+
+<div class="tip">
+  <b>Workflow :</b> Clique ▶ pour chercher sur YouTube → copie l'URL → colle dans le champ ID → ajoute une légende optionnelle → clique <b>+</b> pour ajouter d'autres vidéos au même spot.
+</div>
+
+<div class="actions">
+  <button onclick="generateJSON()">📋 Copier le JSON</button>
+  <button class="secondary" onclick="toggleOutput()">Voir le JSON</button>
+  <button class="secondary" onclick="saveLocal()">💾 Sauvegarder</button>
+  <button class="secondary" onclick="loadLocal()">📂 Charger</button>
+  <span class="count" id="counter">0 vidéos · 0 / 33 spots</span>
+</div>
+
+<div id="spots"></div>
+<div id="output"><pre id="json-output"></pre></div>
+
+<script>
+const SPOTS = [
+  {n:1, name:"Sally Ann's", region:"rivas"},
+  {n:2, name:"Playa Hermosa (SJDS)", region:"rivas"},
+  {n:3, name:"Manzanillo", region:"rivas"},
+  {n:4, name:"Playa Gigante", region:"rivas"},
+  {n:5, name:"Playa Colorado", region:"rivas"},
+  {n:6, name:"Panga Drops", region:"rivas"},
+  {n:7, name:"Playa Rosada", region:"rivas"},
+  {n:8, name:"Santana", region:"rivas"},
+  {n:9, name:"Popoyo Outer Reef", region:"rivas"},
+  {n:10, name:"Popoyo Main Reef", region:"rivas"},
+  {n:11, name:"Lance's Left", region:"rivas"},
+  {n:12, name:"Playgrounds", region:"rivas"},
+  {n:13, name:"Chiggas", region:"leon"},
+  {n:14, name:"Hemorrhoids", region:"leon"},
+  {n:15, name:"El Tránsito", region:"leon"},
+  {n:16, name:"Asuchillo", region:"leon"},
+  {n:17, name:"El Velero / Huehuete", region:"leon"},
+  {n:18, name:"Shacks", region:"leon"},
+  {n:19, name:"Miramar (Punta)", region:"leon"},
+  {n:20, name:"Outside Miramar", region:"leon"},
+  {n:21, name:"Pipes", region:"leon"},
+  {n:22, name:"Puerto Sandino / Freight Trains", region:"leon"},
+  {n:23, name:"Salinas Grandes", region:"leon"},
+  {n:24, name:"Las Peñitas / Poneloya", region:"leon"},
+  {n:25, name:"La Isla Aserradores / The Island", region:"chinandega"},
+  {n:26, name:"Powder Puffs", region:"chinandega"},
+  {n:27, name:"The Boom (Aserradores)", region:"chinandega"},
+  {n:28, name:"Coconuts", region:"chinandega"},
+  {n:29, name:"Rocky Point", region:"chinandega"},
+  {n:30, name:"Meatgrinders", region:"chinandega"},
+  {n:31, name:"Santa María del Mar", region:"chinandega"},
+  {n:32, name:"Jiquilillo", region:"chinandega"},
+  {n:33, name:"Coco Loco", region:"chinandega"},
+];
+
+function extractYTID(val) {
+  val = val.trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(val)) return val;
+  const m = val.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : val;
+}
+
+function updateCount() {
+  let vids = 0, spotsWithVids = 0;
+  document.querySelectorAll('.spot').forEach(spot => {
+    const inputs = spot.querySelectorAll('.vid-id');
+    let hasAny = false;
+    inputs.forEach(inp => {
+      const id = extractYTID(inp.value);
+      if (id && /^[a-zA-Z0-9_-]{11}$/.test(id)) { vids++; hasAny = true; }
+    });
+    if (hasAny) spotsWithVids++;
+    // Update count badge
+    const badge = spot.querySelector('.vid-count');
+    const count = [...inputs].filter(inp => { const id = extractYTID(inp.value); return id && /^[a-zA-Z0-9_-]{11}$/.test(id); }).length;
+    badge.textContent = count > 0 ? count + '🎬' : '';
+    spot.classList.toggle('has-id', count > 0);
+  });
+  document.getElementById('counter').textContent = vids + ' vidéo' + (vids !== 1 ? 's' : '') + ' · ' + spotsWithVids + ' / 33 spots';
+}
+
+function createVidRow(spotN, id, caption) {
+  const row = document.createElement('div');
+  row.className = 'vid-row';
+  row.innerHTML = `
+    <img class="vid-thumb" src="${id ? 'https://img.youtube.com/vi/'+id+'/default.jpg' : ''}" style="${id ? '' : 'display:none'}" onclick="if(this.dataset.id) window.open('https://youtube.com/watch?v='+this.dataset.id)" data-id="${id || ''}">
+    <input type="text" class="vid-id" data-n="${spotN}" placeholder="YouTube ID ou URL" value="${id || ''}">
+    <input type="text" class="caption-input" placeholder="légende (optionnel)" value="${caption || ''}">
+    <button class="remove-btn" onclick="removeVid(this)" title="Supprimer">✕</button>
+  `;
+  const inp = row.querySelector('.vid-id');
+  inp.addEventListener('input', () => onVidInput(inp));
+  inp.addEventListener('paste', (e) => {
+    setTimeout(() => {
+      const extracted = extractYTID(inp.value);
+      if (extracted && extracted.length === 11) inp.value = extracted;
+      onVidInput(inp);
+    }, 10);
+  });
+  if (id) inp.classList.add('valid');
+  return row;
+}
+
+function onVidInput(inp) {
+  const val = inp.value.trim();
+  const id = extractYTID(val);
+  const row = inp.closest('.vid-row');
+  const thumb = row.querySelector('.vid-thumb');
+
+  if (id && /^[a-zA-Z0-9_-]{11}$/.test(id)) {
+    inp.value = id;
+    inp.classList.add('valid');
+    thumb.src = 'https://img.youtube.com/vi/' + id + '/default.jpg';
+    thumb.dataset.id = id;
+    thumb.style.display = '';
+  } else {
+    inp.classList.remove('valid');
+    thumb.style.display = 'none';
+    thumb.dataset.id = '';
+  }
+  updateCount();
+}
+
+function removeVid(btn) {
+  const row = btn.closest('.vid-row');
+  const videos = row.closest('.videos');
+  row.remove();
+  // Ensure at least one row remains
+  if (videos.querySelectorAll('.vid-row').length === 0) {
+    const spotN = videos.closest('.spot').dataset.n;
+    videos.appendChild(createVidRow(spotN));
+  }
+  updateCount();
+}
+
+function addVid(btn) {
+  const spot = btn.closest('.spot');
+  const videos = spot.querySelector('.videos');
+  const spotN = spot.dataset.n;
+  videos.appendChild(createVidRow(spotN));
+  videos.lastElementChild.querySelector('.vid-id').focus();
+}
+
+function searchYT(idx) {
+  const s = SPOTS[idx];
+  const q = encodeURIComponent(s.name + ' nicaragua surf');
+  window.open('https://www.youtube.com/results?search_query=' + q, '_blank');
+}
+
+function buildList() {
+  const container = document.getElementById('spots');
+  SPOTS.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'spot';
+    div.dataset.n = s.n;
+    div.innerHTML = `
+      <div class="spot-header">
+        <span class="num">${s.n}</span>
+        <span class="name">${s.name}</span>
+        <span class="region">${s.region}</span>
+        <span class="vid-count"></span>
+        <a class="yt-link" href="#" onclick="searchYT(${i}); return false;" title="Chercher sur YouTube">▶</a>
+        <button class="add-btn" onclick="addVid(this)">+ vidéo</button>
+      </div>
+      <div class="videos"></div>
+    `;
+    div.querySelector('.videos').appendChild(createVidRow(s.n));
+    container.appendChild(div);
+  });
+}
+
+function getResults() {
+  const results = {};
+  document.querySelectorAll('.spot').forEach(spot => {
+    const n = parseInt(spot.dataset.n);
+    const vids = [];
+    spot.querySelectorAll('.vid-row').forEach(row => {
+      const inp = row.querySelector('.vid-id');
+      const cap = row.querySelector('.caption-input');
+      const id = extractYTID(inp.value);
+      if (id && /^[a-zA-Z0-9_-]{11}$/.test(id)) {
+        vids.push({ id: id, cap: cap.value.trim() || "" });
+      }
+    });
+    if (vids.length > 0) results[n] = vids;
+  });
+  return results;
+}
+
+function generateJSON() {
+  const results = getResults();
+  const totalVids = Object.values(results).reduce((s, v) => s + v.length, 0);
+  const json = JSON.stringify(results, null, 2);
+  navigator.clipboard.writeText(json).then(() => {
+    alert('JSON copié ! (' + totalVids + ' vidéos sur ' + Object.keys(results).length + ' spots)\nColle-le dans le chat Claude.');
+  });
+}
+
+function toggleOutput() {
+  const el = document.getElementById('output');
+  if (el.style.display === 'block') { el.style.display = 'none'; return; }
+  const results = getResults();
+  document.getElementById('json-output').textContent = JSON.stringify(results, null, 2);
+  el.style.display = 'block';
+}
+
+function saveLocal() {
+  const data = getResults();
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'yt-ids.json';
+  a.click();
+}
+
+function loadLocal() {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.json';
+  inp.onchange = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        Object.entries(data).forEach(([n, vids]) => {
+          const spot = document.querySelector(`.spot[data-n="${n}"]`);
+          if (!spot) return;
+          const videosEl = spot.querySelector('.videos');
+          videosEl.innerHTML = '';
+          // Handle both old format (single string) and new format (array)
+          const vidArray = Array.isArray(vids) ? vids : [{id: vids, cap: ""}];
+          vidArray.forEach(v => {
+            const id = typeof v === 'string' ? v : v.id;
+            const cap = typeof v === 'string' ? '' : (v.cap || '');
+            videosEl.appendChild(createVidRow(n, id, cap));
+          });
+        });
+        updateCount();
+      } catch(e) { alert('Fichier invalide: ' + e.message); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+buildList();
+</script>
+</body>
+</html>
