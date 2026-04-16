@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nicaragua Surf Trip — Juillet (Sud→Nord)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  html, body { margin:0; padding:0; height:100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#000; }
+  #map { position:absolute; top:0; bottom:0; left:0; right:0; background:#111; }
+  #error { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#fff; text-align:center; font-size:15px; padding:20px; display:none; z-index:999;}
+  .legend { position: absolute; bottom: 20px; right: 10px; z-index: 1000; background: rgba(20,20,20,0.88); color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.5; box-shadow: 0 2px 10px rgba(0,0,0,0.3);}
+  .legend .dot { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; vertical-align:middle;}
+  .title-bar { position:absolute; top:10px; left:10px; z-index:1000; background: rgba(20,20,20,0.88); color:#fff; padding: 10px 14px; border-radius: 8px; font-size: 14px; max-width: 320px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);}
+  .title-bar h1 { margin:0 0 4px 0; font-size:15px; }
+  .title-bar p { margin:0; font-size:12px; opacity:0.85; }
+
+  /* FILTER PANEL */
+  .filter-toggle { position:absolute; top:10px; right:10px; z-index:1001; background:#111; color:#fff; border:1px solid #444; padding:8px 12px; border-radius:6px; font-size:13px; cursor:pointer; font-weight:600;}
+  .filter-toggle:hover { background:#222; }
+  .filter-panel { position:absolute; top:52px; right:10px; z-index:1001; background: rgba(20,20,20,0.94); color:#fff; padding: 14px 16px; border-radius: 8px; font-size: 13px; box-shadow: 0 4px 14px rgba(0,0,0,0.5); width: 240px; display:none;}
+  .filter-panel.open { display:block; }
+  .filter-panel h4 { margin: 10px 0 6px 0; font-size: 12px; color: #ffcc00; text-transform: uppercase; letter-spacing: 0.5px;}
+  .filter-panel h4:first-child { margin-top:0; }
+  .filter-panel label { display:block; cursor:pointer; padding:3px 0; font-size:13px; user-select:none;}
+  .filter-panel label input { margin-right:6px; vertical-align: middle;}
+  .filter-panel .count { font-size: 11px; opacity:0.55; float:right;}
+  .filter-panel .footer { margin-top:12px; padding-top:10px; border-top:1px solid #333; font-size:12px; display:flex; justify-content:space-between; align-items:center;}
+  .filter-panel .reset { background:none; border:1px solid #666; color:#fff; padding:4px 10px; border-radius:4px; cursor:pointer; font-size:11px;}
+  .filter-panel .reset:hover { background:#333; }
+  .filter-panel .visible-count { font-weight:700; color:#ffcc00;}
+
+  .popup h3 { margin: 0 0 4px 0; font-size: 15px; color:#111; }
+  .popup .sub { font-size: 11px; color:#666; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+  .popup .tags { margin: 6px 0 10px 0; display:flex; flex-wrap:wrap; gap:4px;}
+  .popup .tag { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: #eef; color: #334; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;}
+  .popup .tag.cat-beach { background:#fdebd3; color:#7a4b00; }
+  .popup .tag.cat-mixte { background:#e0eaff; color:#1a3a8a; }
+  .popup .tag.cat-reef  { background:#d5f4e0; color:#0a5c2a; }
+  .popup .row { margin: 5px 0; font-size: 13px; line-height:1.45;}
+  .popup .label { font-weight: 600; color:#333; }
+  .popup .sources { margin-top:8px; font-size:11px; color:#555; border-top:1px solid #eee; padding-top:6px;}
+  .popup .sources a { color: #0066cc; text-decoration: none; }
+  .popup .warn { background:#fff3cd; color:#664d03; padding:5px 8px; border-radius:4px; font-size:11px; margin:6px 0; border-left:3px solid #ffc107;}
+  .leaflet-popup-content { margin: 12px 14px; max-width: 340px; }
+  .leaflet-popup-content-wrapper { border-radius: 8px; }
+  .marker-num { color:#fff; border-radius: 50%; width: 28px; height: 28px; display:flex; align-items:center; justify-content:center; font-weight: 700; font-size: 13px; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.4);}
+  .marker-num.rivas { background: #e74c3c; }
+  .marker-num.leon { background: #f39c12; }
+  .marker-num.chinandega { background: #27ae60; }
+  .marker-num.unverified { border-style: dashed; border-color: #ffeb3b; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="error"></div>
+<div class="title-bar">
+  <h1>🏄 Nicaragua Surf Trip — Juillet</h1>
+  <p>30 spots du sud au nord. Niveau avancé. Bordure pointillée jaune = position approximative.</p>
+</div>
+
+<button class="filter-toggle" id="filterToggle">🔍 Filtres <span class="visible-count" id="visibleCount">(30)</span></button>
+
+<div class="filter-panel" id="filterPanel">
+  <h4>Catégorie</h4>
+  <label><input type="checkbox" class="f" data-k="cat" value="beach" checked> Beach-break <span class="count" id="c-cat-beach"></span></label>
+  <label><input type="checkbox" class="f" data-k="cat" value="mixte" checked> Mixte <span class="count" id="c-cat-mixte"></span></label>
+  <label><input type="checkbox" class="f" data-k="cat" value="reef" checked> Reef <span class="count" id="c-cat-reef"></span></label>
+
+  <h4>Marée idéale</h4>
+  <label><input type="checkbox" class="f" data-k="tideF" value="basse" checked> Basse <span class="count" id="c-tideF-basse"></span></label>
+  <label><input type="checkbox" class="f" data-k="tideF" value="mi" checked> Mi-marée <span class="count" id="c-tideF-mi"></span></label>
+  <label><input type="checkbox" class="f" data-k="tideF" value="haute" checked> Haute <span class="count" id="c-tideF-haute"></span></label>
+
+  <h4>Fréquentation</h4>
+  <label><input type="checkbox" class="f" data-k="crowdF" value="basse" checked> Basse <span class="count" id="c-crowdF-basse"></span></label>
+  <label><input type="checkbox" class="f" data-k="crowdF" value="moyenne" checked> Moyenne <span class="count" id="c-crowdF-moyenne"></span></label>
+  <label><input type="checkbox" class="f" data-k="crowdF" value="haute" checked> Haute <span class="count" id="c-crowdF-haute"></span></label>
+
+  <h4>Accès</h4>
+  <label><input type="checkbox" class="f" data-k="accessF" value="facile" checked> Facile (voiture) <span class="count" id="c-accessF-facile"></span></label>
+  <label><input type="checkbox" class="f" data-k="accessF" value="4x4" checked> 4x4 / piste <span class="count" id="c-accessF-4x4"></span></label>
+  <label><input type="checkbox" class="f" data-k="accessF" value="bateau" checked> Bateau <span class="count" id="c-accessF-bateau"></span></label>
+
+  <div class="footer">
+    <span><span class="visible-count" id="visibleCountPanel">30</span> / 30 spots</span>
+    <button class="reset" id="resetBtn">Tout réinitialiser</button>
+  </div>
+</div>
+
+<div class="legend">
+  <div><span class="dot" style="background:#e74c3c"></span>Rivas (Sud)</div>
+  <div><span class="dot" style="background:#f39c12"></span>León (Centre)</div>
+  <div><span class="dot" style="background:#27ae60"></span>Chinandega (Nord)</div>
+  <div style="margin-top:6px; font-size:11px; opacity:0.8;">🚩 = 1 seule source · ⚠️ = position approx</div>
+</div>
+
+<script>
+function loadScript(urls, cb) {
+  if (!urls.length) { cb(new Error('All CDNs failed')); return; }
+  const s = document.createElement('script');
+  s.src = urls[0];
+  s.onload = () => cb(null);
+  s.onerror = () => loadScript(urls.slice(1), cb);
+  document.head.appendChild(s);
+}
+loadScript([
+  'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js',
+  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js'
+], function(err) {
+  if (err || typeof L === 'undefined') {
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('error').innerHTML = '⚠️ Leaflet n\'a pas pu charger.';
+    return;
+  }
+  initMap();
+});
+
+function initMap() {
+// cat: beach | mixte | reef
+// tideF: basse | mi | haute  (marée idéale dominante)
+// crowdF: basse | moyenne | haute
+// accessF: facile | 4x4 | bateau  (mode d'accès dominant)
+const spots = [
+  {n:1, name:"Playa Yankee", region:"rivas", lat:11.1470, lon:-85.7620, posType:"approx",
+    cat:"beach", tideF:"haute", crowdF:"basse", accessF:"facile",
+    type:"Beach break — gauche wedgy", size:"0,9–1,8 m", tide:"Haute (pic secondaire à mi-marée)",
+    desc:"Gauche rapide avec drop steep et tubes occasionnels. Pic sud plus consistant.",
+    access:"Voiture simple, 20–30 min au sud de San Juan del Sur",
+    crowd:"Peu fréquenté, le moins couru des plages SJDS",
+    lodging:"Verdad Nicaragua · Chica Brava · Mango Rosa",
+    sources:[["Verdad Nicaragua","https://www.verdadnicaragua.com/post/an-insider-s-guide-to-surfing-in-southern-nicaragua"],["Surfline El Yanke","https://www.surfline.com/surf-report/el-yanke/640a43be451905ebdf9db8ad"]]},
+  {n:2, name:"Playa Hermosa (SJDS)", region:"rivas", lat:11.1900, lon:-85.8150, posType:"approx",
+    cat:"beach", tideF:"mi", crowdF:"moyenne", accessF:"facile",
+    type:"Beach break — pics multiples sur 1,5 km", size:"0,6–1,8 m", tide:"Mi à haute",
+    desc:"Plusieurs pics étalés sur la plage, vagues longues et formées.",
+    access:"Voiture simple via route goudronnée depuis SJDS, entrée ~3$",
+    crowd:"Populaire mais étalé, moins chargé que Popoyo",
+    lodging:"Playa Hermosa Surf Camp · Dreamsea · Casa Nomada",
+    sources:[["Surf-Forecast","https://www.surf-forecast.com/breaks/Playa-Hermosa_1"],["Surf Atlas","https://thesurfatlas.com/nicaragua-surf/san-juan-del-sur-surf/"]]},
+  {n:3, name:"Playa Gigante", region:"rivas", lat:11.3911, lon:-86.0326, posType:"verified",
+    cat:"mixte", tideF:"mi", crowdF:"moyenne", accessF:"facile",
+    type:"Beach + reefs secondaires", size:"1,2–2,1 m", tide:"Mi-marée",
+    desc:"Baie avec plusieurs types de vagues. Plan B quand le sud est maxé.",
+    access:"Voiture simple, village accessible",
+    crowd:"Modéré, scène backpacker",
+    lodging:"Camino del Gigante · Giant's Foot Surf",
+    sources:[["Surf-Forecast","https://www.surf-forecast.com/breaks/Playa-Gigante"],["Mapcarta","https://mapcarta.com/Playa_Gigante"]]},
+  {n:4, name:"Manzanillo", region:"rivas", lat:11.4335, lon:-86.0295, posType:"approx",
+    cat:"reef", tideF:"mi", crowdF:"basse", accessF:"bateau",
+    type:"Point break gauche 200–300 m", size:"1,2–2,4 m", tide:"Mi-marée",
+    desc:"Point gauche long, walls rippables, peu de monde.",
+    access:"Bateau depuis Hide & Seek ou via Guacalito (gated)",
+    crowd:"Peu connu, plus confidentiel que Popoyo",
+    lodging:"Guacalito Rentals · Mukul Resort",
+    sources:[["DeepSwell","https://deepswell.com/surf-guide/Central-America/Nicaragua/Manzanillo/1703"],["Surf-Forecast","https://www.surf-forecast.com/breaks/Punta-Manzanillo"]]},
+  {n:5, name:"Playa Colorado", region:"rivas", lat:11.4085, lon:-86.0508, posType:"verified",
+    cat:"reef", tideF:"mi", crowdF:"haute", accessF:"facile",
+    type:"Reef — droites/gauches creuses, tubes", size:"1,2–3,6 m", tide:"Mi-marée",
+    desc:"Le reef signature du pays. Tubes consistants, vague puissante.",
+    access:"Bateau OU Hacienda Iguana (résidents/guests) — voiture ~45 min depuis Rivas",
+    crowd:"Mondialement connu — 50+ surfeurs en peak mai–août",
+    lodging:"Mark & Dave's · Tidal Surf · Colorado Surf and Stay",
+    sources:[["MyWaveFinder","https://www.mywavefinder.com/destination/playa-colorado-nicaragua-surf-guide/"],["Worldplaces.me","https://worldplaces.me/place/playa-iguana-nicaragua"],["Surf-Forecast","https://www.surf-forecast.com/breaks/Colorado"]]},
+  {n:6, name:"Panga Drops", region:"rivas", lat:11.4120, lon:-86.0560, posType:"offshore",
+    cat:"reef", tideF:"basse", crowdF:"basse", accessF:"bateau",
+    type:"Reef — amplifie la houle", size:"1,2–3,0 m", tide:"Toutes marées, meilleur de basse à mi",
+    desc:"Bathymétrie en fer à cheval qui magnifie la houle. Marche quand tout le reste est flat.",
+    access:"Bateau depuis Hacienda Iguana OU 15 min à pied depuis Colorado",
+    crowd:"Peu fréquenté vu la qualité",
+    lodging:"Mark & Dave's · Tidal Surf · Nica Xtreme",
+    sources:[["Surfline","https://www.surfline.com/travel/zones/south-nicaragua/surf-guide/panga-drops/584204204e65fad6a7709146"],["DeepSwell","https://deepswell.com/surf-report/Central-America/Nicaragua/Panga-Drops/1701"],["Las Plumerias","https://www.lasplumerias.com/spot-guide-8-tips-for-surfing-panga-drops/"]]},
+  {n:7, name:"Santana", region:"rivas", lat:11.4420, lon:-86.0800, posType:"approx",
+    cat:"beach", tideF:"haute", crowdF:"moyenne", accessF:"facile",
+    type:"Beach break wedgy, creux", size:"0,6–1,2 m (sweet spot)", tide:"Mi à haute",
+    desc:"Wedge rapide avec barrels en amande même sur petites conditions.",
+    access:"Voiture via route de Tola, à pied depuis Rancho Santana",
+    crowd:"Populaire localement, 2 premiers pics chargés",
+    lodging:"Rancho Santana",
+    sources:[["Surfline","https://www.surfline.com/travel/zones/south-nicaragua/surf-guide/santana/5842041f4e65fad6a7708b44"],["Rancho Santana","https://ranchosantana.com/surfing-in-nicaragua/"],["NSR","https://surfnsr.com/surf-spot/playa-santana/"]]},
+  {n:8, name:"Popoyo Main Reef", region:"rivas", lat:11.4701, lon:-86.1249, posType:"verified",
+    cat:"reef", tideF:"mi", crowdF:"haute", accessF:"facile",
+    type:"Reef A-frame (gauche + droite)", size:"0,6–3,0 m", tide:"Toutes marées, meilleur à mi",
+    desc:"Vague la plus consistante du Nicaragua. Pic en A shifty, prend toutes les directions.",
+    access:"À pied depuis Popoyo village, voiture simple (~1h30 de Managua)",
+    crowd:"⚠️ LE plus chargé du pays, un seul pic shifty",
+    lodging:"Malibu Popoyo · Amahula · Magnific Rock · Salty Surf",
+    sources:[["Surfline","https://www.surfline.com/travel/zones/south-nicaragua/surf-guide/popoyo/5842041f4e65fad6a7708db9"],["Latlong.net","https://www.latlong.net/place/popoyo-nicaragua-33021.html"],["Costa Oeste","https://www.costaoestenica.com/popoyo-surf-guide"]]},
+  {n:9, name:"Popoyo Outer Reef", region:"rivas", lat:11.4650, lon:-86.1380, posType:"offshore",
+    cat:"reef", tideF:"haute", crowdF:"basse", accessF:"bateau",
+    type:"Slab lourd, expert uniquement", size:"3,5 m+ (casse rarement)", tide:"Mi à haute — basse = reef exposé",
+    desc:"Big-wave slab à ~800 m au large de Main Reef. Quand ça part, les experts débarquent du monde entier.",
+    access:"Bateau ou long paddle depuis Main Reef",
+    crowd:"Rarement bondé (rareté + filtre expert)",
+    lodging:"Malibu Popoyo · Las Plumerias",
+    sources:[["Surfline","https://www.surfline.com/surf-report/popoyo-outer-reef/5842041f4e65fad6a7708dba/spot-guide"],["Malibu Popoyo","https://malibupopoyo.com/popoyo-wave-guide/"],["DeepSwell","https://deepswell.com/surf-guide/Central-America/Nicaragua/Popoyo-Outer-Reef/1699"]]},
+  {n:10, name:"Lance's Left", region:"rivas", lat:11.5044, lon:-86.1675, posType:"verified",
+    cat:"reef", tideF:"basse", crowdF:"moyenne", accessF:"bateau",
+    type:"Point break gauche long (jusqu'à 500 m)", size:"0,6–3,6 m", tide:"Basse à mi",
+    desc:"Gauche ultra longue, walls rippables, sections fast.",
+    access:"Bateau depuis Astillero (évite un long paddle)",
+    crowd:"Moins connu que Popoyo Main",
+    lodging:"Malibu Popoyo · Astillero village",
+    sources:[["Surfing Nahua","https://surfingnahua.com/popoyo-surf-spot/lances-left/"],["Maplandia (El Astillero)","http://www.maplandia.com/nicaragua/rivas/tola/el-astillero/"],["Surfline","https://www.surfline.com/surf-report/lances-left/5842041f4e65fad6a7708d39"]]},
+  {n:11, name:"Playgrounds", region:"rivas", lat:11.5550, lon:-86.2200, posType:"offshore",
+    cat:"reef", tideF:"mi", crowdF:"basse", accessF:"bateau",
+    type:"Reef en galets — pic A-frame", size:"0,9–2,4 m", tide:"🚩 Matin recommandé",
+    desc:"Split peaks. Gauche longue rippable ; droite steep et tubée. Proche refuge Chacocente.",
+    access:"Bateau uniquement (~25 min depuis Astillero)",
+    crowd:"Très peu fréquenté, souvent seul",
+    lodging:"Playgrounds Surf Camp · Hide & Seek Resort",
+    sources:[["Giant's Foot","https://giantsfootsurf.com/surfing-playgrounds/"],["Hide & Seek","https://www.hideandseekresort.com/surfbreaks"],["Wikipedia Chacocente","https://en.wikipedia.org/wiki/Chacocente_Wildlife_Refuge"]]},
+
+  {n:12, name:"El Tránsito", region:"leon", lat:12.0542, lon:-86.7053, posType:"verified",
+    cat:"beach", tideF:"mi", crowdF:"basse", accessF:"4x4",
+    type:"Beach break très consistant, pics multiples", size:"0,9–2,1 m — 📍 juillet = meilleur mois", tide:"Mi-marée",
+    desc:"Beach break fiable, pics qui se déplacent avec la marée. Rarement petit.",
+    access:"13 km de piste depuis KM 44 — 4x4 recommandé en saison des pluies (~1h–1h30 depuis Managua)",
+    crowd:"Peu fréquenté, vrai secret local",
+    lodging:"Rise Up Surf (Mandla) · Miramar Surf Camp (45 min)",
+    sources:[["Surfline","https://www.surfline.com/travel/zones/north-nicaragua/surf-guide/el-transito/584204204e65fad6a7709078"],["MyWaveFinder","https://www.mywavefinder.com/destination/el-transito-nicaragua-surfing-guide/"],["DeepSwell","https://deepswell.com/surf-guide/Central-America/Nicaragua/El-Transito/1697"]]},
+  {n:13, name:"Asuchillo", region:"leon", lat:12.0840, lon:-86.7180, posType:"approx",
+    cat:"beach", tideF:"mi", crowdF:"basse", accessF:"4x4",
+    type:"Beach break sur banc de sable", size:"0,9–1,5 m", tide:"🚩 Toutes marées",
+    desc:"Sandbar ludique, fond sable = landings soft. Vent offshore du lac Nicaragua = matins glassy.",
+    access:"Voiture via piste (~13 km depuis route principale)",
+    crowd:"Quasi toujours vide, quelques locaux en weekend",
+    lodging:"Rise Up Surf",
+    sources:[["Surf-Forecast","https://www.surf-forecast.com/breaks/Asuchillo-Beach"],["Mondo Surf","https://www.mondo.surf/surf-spot/asunchillo/guide/11988"],["Lush Palm","https://lushpalm.com/surfing-nicaragua/"]]},
+  {n:14, name:"El Velero / Huehuete", region:"leon", lat:12.1400, lon:-86.7500, posType:"verified",
+    cat:"beach", tideF:"mi", crowdF:"basse", accessF:"facile",
+    type:"🚩 Beach break", size:"0,6–1,5 m (estimé)", tide:"🚩 Aucune source claire",
+    desc:"🚩 Village de pêcheurs, spot confidentiel.",
+    access:"Voiture depuis León (~70 km de Managua)",
+    crowd:"🚩 Très peu surfé",
+    lodging:"Hébergements locaux rares",
+    sources:[["Visit León","https://www.visitleon.info/playa-el-velero.html"],["Mapcarta","https://mapcarta.com/37367334"]]},
+  {n:15, name:"Shacks", region:"leon", lat:12.1580, lon:-86.7530, posType:"offshore",
+    cat:"reef", tideF:"basse", crowdF:"basse", accessF:"facile",
+    type:"Reef gauche rapide, sharp reef", size:"0,9–1,8 m", tide:"Basse",
+    desc:"Gauche rapide et formée sur reef tranchant. Sessions courtes mais intenses.",
+    access:"2–5 min à pied au sud de Miramar Surf Camp",
+    crowd:"Plus calme que Freight Trains voisin",
+    lodging:"Miramar Surf Camp",
+    sources:[["Miramar","https://www.miramarsurfcamp.com/surf-breaks/shacks"],["Perfect Wave Travel","https://www.perfectwavetravel.com/surf-trips/nicaragua/miramar-surf-camp/"]]},
+  {n:16, name:"Miramar (Punta)", region:"leon", lat:12.1625, lon:-86.7553, posType:"verified",
+    cat:"reef", tideF:"mi", crowdF:"moyenne", accessF:"facile",
+    type:"Reef devant le camp", size:"0,9–2,1 m", tide:"🚩 Toutes marées",
+    desc:"Reef principal juste devant Miramar Surf Camp. Consistant toute l'année.",
+    access:"À pied depuis Miramar Surf Camp (~1h30 depuis Managua)",
+    crowd:"Spot populaire de la zone, clientèle internationale",
+    lodging:"Miramar Surf Camp · Sirena Surf Lodge",
+    sources:[["Visit León","https://www.visitleon.info/playa-miramar.html"],["Surf-Forecast","https://www.surf-forecast.com/breaks/Punta-Miramar"]]},
+  {n:17, name:"Pipes", region:"leon", lat:12.1635, lon:-86.7560, posType:"offshore",
+    cat:"reef", tideF:"mi", crowdF:"moyenne", accessF:"facile",
+    type:"Pic en A, reef plat sur la gauche", size:"0,9–2,1 m", tide:"Toutes marées, meilleur à mi",
+    desc:"Pic A-frame performer, tubes sur la plupart des houles.",
+    access:"1 min à pied depuis Miramar Surf Camp",
+    crowd:"Modéré (guests camp + day-trippers)",
+    lodging:"Miramar Surf Camp",
+    sources:[["Miramar","https://www.miramarsurfcamp.com/surf-breaks"],["DeepSwell","https://deepswell.com/surf-guide/Central-America/Nicaragua/Miramar/1696"]]},
+  {n:18, name:"Outside Miramar", region:"leon", lat:12.1630, lon:-86.7650, posType:"offshore",
+    cat:"reef", tideF:"basse", crowdF:"moyenne", accessF:"bateau",
+    type:"Point gauche extérieur long + barrels", size:"1,5–3,0 m", tide:"Basse",
+    desc:"Vague extérieure longue avec sections tubulaires. Gros swell uniquement.",
+    access:"Bateau uniquement depuis Miramar Surf Camp (~5 min)",
+    crowd:"Spot populaire, shuttle bateau organisé",
+    lodging:"Miramar Surf Camp · Sirena Surf Lodge",
+    sources:[["Miramar","https://www.miramarsurfcamp.com/surf-breaks"],["DeepSwell","https://deepswell.com/surf-guide/Central-America/Nicaragua/Miramar/1696"],["Sirena","https://sirenasurflodge.com/mechanics-of-puerto-sandino-black-holes-and-other-treasures/"]]},
+  {n:19, name:"Puerto Sandino / Freight Trains", region:"leon", lat:12.1957, lon:-86.7601, posType:"verified",
+    cat:"reef", tideF:"basse", crowdF:"basse", accessF:"bateau",
+    type:"Gauche 300 m sur reef peu profond", size:"1,2–3,0 m", tide:"Basse à mi (marée montante = meilleur)",
+    desc:"Embouchure, gauche 300 m, sections slab, reef < 60 cm. ⚠️ Baïnes puissantes (\"Black Holes\") à mi-marée montante.",
+    access:"Bateau (~10 min depuis Miramar Surf Camp), voiture 30 min au nord de León",
+    crowd:"Très peu monde pour la qualité",
+    lodging:"Miramar Surf Camp · Sirena Surf Lodge · AST Adventures",
+    sources:[["Miramar Surf Camp","https://www.miramarsurfcamp.com/article/surfing-puerto-sandino---a-must-experience-wave-in-nicaragua/"],["Mapcarta","https://mapcarta.com/19579964"],["Wannasurf","https://www.wannasurf.com/spot/Central_America/Nicaragua/Freight_Trains/index.html"]]},
+  {n:20, name:"Salinas Grandes", region:"leon", lat:12.2592, lon:-86.8389, posType:"verified",
+    cat:"beach", tideF:"mi", crowdF:"basse", accessF:"4x4",
+    type:"Beach break isolé, plusieurs km", size:"0,9–1,8 m (fickle)", tide:"Dépend du banc de sable et du vent",
+    desc:"Plage préservée. Break capricieux mais très calme quand ça marche.",
+    access:"Piste en terre (~1 h+ depuis León), 4x4 conseillé en saison des pluies",
+    crowd:"Très peu fréquenté, souvent seul",
+    lodging:"Base depuis León ou Miramar",
+    sources:[["Mapcarta","https://mapcarta.com/19579652"],["DeepSwell","https://deepswell.com/surf-guide/Central-America/Nicaragua/Salinas-Grandes/1717"]]},
+  {n:21, name:"Las Peñitas / Poneloya", region:"leon", lat:12.3667, lon:-87.0167, posType:"verified",
+    cat:"mixte", tideF:"mi", crowdF:"moyenne", accessF:"facile",
+    type:"Beach gauche + reef/point pour avancés", size:"0,6–1,8 m", tide:"🚩 Source unique",
+    desc:"Beach break backpacker + reef devant Hotel Playa Roca sur gros swell. ⚠️ Baïnes.",
+    access:"18 km de León, route goudronnée, voiture simple (~15 min)",
+    crowd:"Scène backpacker, accessible",
+    lodging:"Hotel Playa Roca · Surfing Turtle Lodge · hostels León",
+    sources:[["Wikipedia","https://en.wikipedia.org/wiki/Las_Pe%C3%B1itas,_Nicaragua"],["Surfline","https://www.surfline.com/surf-report/las-penitas/5a1dfd8b1d8788001b7966de"],["Maplandia","http://www.maplandia.com/nicaragua/leon/leon/las-penitas/"]]},
+
+  {n:22, name:"La Isla Aserradores / The Island", region:"chinandega", lat:12.6250, lon:-87.3700, posType:"offshore",
+    cat:"reef", tideF:"mi", crowdF:"moyenne", accessF:"bateau",
+    type:"Point break gauche, baie Nahualapa", size:"1,2–3,0 m", tide:"Deux sections selon marée et taille de houle",
+    desc:"Swell magnet. Deux sections. Tolérant et rippable quand ça marche.",
+    access:"Bateau uniquement (~5 min depuis Coco Loco Eco Resort ou Aserradores)",
+    crowd:"Moins chargé que The Boom",
+    lodging:"Coco Loco Eco Resort",
+    sources:[["Coco Loco","https://visitcocoloco.com/pages/surf"],["Surfing Nahua","https://surfingnahua.com/surf-spot/the-island/"]]},
+  {n:23, name:"Powder Puffs", region:"chinandega", lat:12.6290, lon:-87.3490, posType:"offshore",
+    cat:"beach", tideF:"haute", crowdF:"moyenne", accessF:"4x4",
+    type:"Pic sud de The Boom", size:"1,2–2,4 m", tide:"Haute",
+    desc:"Section sud de The Boom. Plus tolérante que le main peak.",
+    access:"Même accès que The Boom (piste depuis Aserradores, 4x4)",
+    crowd:"Variable comme le main break",
+    lodging:"Amaru · BadaBoom · Thunderbomb",
+    sources:[["Surfline","https://www.surfline.com/surf-report/the-boom/61d4d151c15a827dc58364ec/spot-guide"],["Nomad in Me","https://www.nomadinme.com/surfing-the-boom/"]]},
+  {n:24, name:"The Boom (Aserradores)", region:"chinandega", lat:12.6306, lon:-87.3484, posType:"verified",
+    cat:"beach", tideF:"haute", crowdF:"haute", accessF:"4x4",
+    type:"Pic A-frame dredging — \"mini Puerto Escondido\"", size:"0,9–1,5 m optimal, jusqu'à 2,4 m", tide:"Haute — ne marche pas à basse",
+    desc:"Beach break de classe mondiale. Barrels photogéniques. Canyon sous-marin amplifie même les petites houles. Avancés uniquement.",
+    access:"~1 h au nord de Chinandega (Route 3), piste finale — 4x4 ou moto recommandés",
+    crowd:"Variable : 4–5 surfeurs hors saison, 3 camps de monde en peak",
+    lodging:"Amaru Nicaragua · BadaBoom Hostal · Thunderbomb · Las Dunas",
+    sources:[["Surfline","https://www.surfline.com/travel/zones/north-nicaragua/surf-guide/the-boom/61d4d151c15a827dc58364ec"],["Mapcarta","https://mapcarta.com/N6516459085"],["Windy.app","https://windy.app/forecast2/spot/4662027/The+Boom"]]},
+  {n:25, name:"Coconuts", region:"chinandega", lat:12.6320, lon:-87.3480, posType:"offshore",
+    cat:"beach", tideF:"haute", crowdF:"moyenne", accessF:"4x4",
+    type:"Pic nord de The Boom", size:"1,2–2,4 m", tide:"Haute",
+    desc:"Section nord de The Boom, pic distinct. Alternative quand le main est chargé.",
+    access:"Même accès que The Boom",
+    crowd:"Variable, partagé avec The Boom",
+    lodging:"Amaru · BadaBoom · Thunderbomb",
+    sources:[["Surfline","https://www.surfline.com/surf-report/the-boom/61d4d151c15a827dc58364ec/spot-guide"],["Nomad in Me","https://www.nomadinme.com/surfing-the-boom/"]]},
+  {n:26, name:"Rocky Point", region:"chinandega", lat:12.6400, lon:-87.3950, posType:"offshore",
+    cat:"reef", tideF:"mi", crowdF:"moyenne", accessF:"4x4",
+    type:"Reef triangulaire (droites + gauches)", size:"1,2–2,4 m", tide:"🚩 Mi à haute",
+    desc:"Reef avec gauches et droites. Technique, tubes rewarding.",
+    access:"Voiture + gated community (Rocky Point Estates), 5 km de piste",
+    crowd:"Modéré",
+    lodging:"Rocky Point Estates rentals",
+    sources:[["Rocky Point","http://rockypointnicaragua.com/area/"],["Lush Palm","https://lushpalm.com/surfing-nicaragua/"]]},
+  {n:27, name:"Meatgrinders", region:"chinandega", lat:12.6430, lon:-87.3980, posType:"offshore",
+    cat:"reef", tideF:"mi", crowdF:"basse", accessF:"4x4",
+    type:"Reef gauche peu profond, slab", size:"1,2–2,4 m", tide:"Mi à haute (montante idéale)",
+    desc:"Top 5 Nicaragua. Shallow reef, drops steep, tubes épais. Expert uniquement.",
+    access:"Voiture depuis Chinandega (~1h30), 4x4 sur 5 km de piste, Rocky Point Estates",
+    crowd:"Peu chargé (difficulté technique filtre)",
+    lodging:"Rocky Point Estates · Amaru",
+    sources:[["Lush Palm","https://lushpalm.com/surfing-nicaragua/"],["Rocky Point","http://rockypointnicaragua.com/area/"],["Rise Up","https://www.riseupsurf.com/the-top-surf-spots-in-northern-nicaragua-minus-our-secret-breaks/"]]},
+  {n:28, name:"Santa María del Mar", region:"chinandega", lat:12.6500, lon:-87.4020, posType:"approx",
+    cat:"beach", tideF:"mi", crowdF:"basse", accessF:"facile",
+    type:"Beach break 1,5 km", size:"0,9–2,1 m", tide:"🚩 Source unique",
+    desc:"Alternative plus scénique et moins chargée que The Boom. Sable blanc.",
+    access:"Voiture depuis Aserradores (~1h30 depuis Chinandega)",
+    crowd:"Moins famous que The Boom, mellow",
+    lodging:"Santa María del Mar Surf Camp · Thunderbomb",
+    sources:[["Nomad Surfers","https://nomadsurfers.com/surf-camp-santa-maria-del-mar-aposentillo-nicaragua/"],["Rise Up Surf","https://www.riseupsurf.com/the-top-surf-spots-in-northern-nicaragua-minus-our-secret-breaks/"]]},
+  {n:29, name:"Jiquilillo", region:"chinandega", lat:12.7335, lon:-87.4424, posType:"verified",
+    cat:"beach", tideF:"mi", crowdF:"basse", accessF:"facile",
+    type:"Beach break sur bancs de sable, pics multiples", size:"0,6–1,5 m", tide:"Marées faibles (0,1–1,95 m), houle SW + vent NE",
+    desc:"Sandbars avec plusieurs pics. 42% de jours clean en juillet (Surf-Forecast). ⚠️ Crocodiles dans l'estuaire Padre Ramos — pas de paddle à l'aube seul.",
+    access:"Voiture via route côtière (~45 min depuis León), bus possible",
+    crowd:"Peu connu, écoles + rentals bon marché",
+    lodging:"Rancho Tranquilo · Thunderbomb · Surfing Turtle Lodge",
+    sources:[["DateAndTime.info","https://dateandtime.info/citycoordinates.php?id=3618924"],["Surf-Forecast","https://www.surf-forecast.com/breaks/Jiquilillo"],["Maplandia","http://www.maplandia.com/nicaragua/chinandega/el-viejo/jiquilillo/"]]},
+  {n:30, name:"Coco Loco", region:"chinandega", lat:12.7900, lon:-87.4950, posType:"approx",
+    cat:"reef", tideF:"mi", crowdF:"basse", accessF:"facile",
+    type:"Reef gauche, ludique et consistant", size:"0,9–2,1 m", tide:"🚩 Toutes marées",
+    desc:"Point-reef gauche consistant, parfait pour tourner. Proche estuaire Padre Ramos.",
+    access:"10 min à pied au sud de Coco Loco Eco Resort",
+    crowd:"Peu connu, calme",
+    lodging:"Coco Loco Eco Resort",
+    sources:[["Coco Loco","https://visitcocoloco.com/pages/surf"],["Surfing Nahua","https://surfingnahua.com/surf-spot/coco-loco/"]]}
+];
+
+const map = L.map('map', { zoomControl: true }).setView([12.0, -86.8], 8);
+
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Tiles &copy; Esri', maxZoom: 18
+}).addTo(map);
+
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+  opacity: 0.6, maxZoom: 18
+}).addTo(map);
+
+const regionLabel = { rivas: 'Rivas', leon: 'León', chinandega: 'Chinandega' };
+const catLabel = { beach: 'Beach-break', mixte: 'Mixte', reef: 'Reef' };
+const tideLabel = { basse: 'Basse', mi: 'Mi-marée', haute: 'Haute' };
+const crowdLabelF = { basse: 'Fréq. basse', moyenne: 'Fréq. moyenne', haute: 'Fréq. haute' };
+const accessLabelF = { facile: 'Accès facile', '4x4': '4x4 / piste', bateau: 'Bateau requis' };
+const posLabel = {
+  verified: '✓ Position vérifiée (source cartographique)',
+  offshore: '~ Position calculée par offset depuis repère terrestre vérifié',
+  approx:   '⚠️ Position approximative — source cartographique introuvable'
+};
+
+const routeCoords = spots.map(s => [s.lat, s.lon]);
+const routeLine = L.polyline(routeCoords, { color: '#fff', weight:2, opacity:0.45, dashArray:'6,8' }).addTo(map);
+
+// Build markers
+const markers = spots.map(s => {
+  const cls = 'marker-num ' + s.region + (s.posType === 'approx' ? ' unverified' : '');
+  const icon = L.divIcon({
+    className: 'marker-div',
+    html: '<div class="' + cls + '">' + s.n + '</div>',
+    iconSize: [28, 28], iconAnchor: [14, 14]
+  });
+  const sourcesHtml = s.sources.map(src => '<a href="' + src[1] + '" target="_blank">' + src[0] + '</a>').join(' · ');
+  const posNote = s.posType !== 'verified' ? '<div class="warn">' + posLabel[s.posType] + '</div>' : '';
+  const tags =
+    '<span class="tag cat-' + s.cat + '">' + catLabel[s.cat] + '</span>' +
+    '<span class="tag">' + tideLabel[s.tideF] + '</span>' +
+    '<span class="tag">' + crowdLabelF[s.crowdF] + '</span>' +
+    '<span class="tag">' + accessLabelF[s.accessF] + '</span>';
+  const popup = '<div class="popup">' +
+    '<h3>' + s.n + '. ' + s.name + '</h3>' +
+    '<div class="sub">' + regionLabel[s.region] + ' · ' + s.type + '</div>' +
+    '<div class="tags">' + tags + '</div>' +
+    posNote +
+    '<div class="row"><span class="label">📏 Taille :</span> ' + s.size + '</div>' +
+    '<div class="row"><span class="label">🌊 Marée :</span> ' + s.tide + '</div>' +
+    '<div class="row"><span class="label">🏄 Vague :</span> ' + s.desc + '</div>' +
+    '<div class="row"><span class="label">🚗 Accès :</span> ' + s.access + '</div>' +
+    '<div class="row"><span class="label">👥 Fréquentation :</span> ' + s.crowd + '</div>' +
+    '<div class="row"><span class="label">🛏 Hébergements :</span> ' + s.lodging + '</div>' +
+    '<div class="sources"><strong>Sources :</strong> ' + sourcesHtml + '</div>' +
+    '</div>';
+  const m = L.marker([s.lat, s.lon], { icon }).bindPopup(popup, { maxWidth: 360 });
+  m.spot = s;
+  m.addTo(map);
+  return m;
+});
+
+map.fitBounds(L.latLngBounds(routeCoords).pad(0.1));
+
+// === FILTER LOGIC ===
+const filterEls = Array.from(document.querySelectorAll('.f'));
+const visibleCountEl = document.getElementById('visibleCount');
+const visibleCountPanelEl = document.getElementById('visibleCountPanel');
+
+function getFilters() {
+  const f = { cat:[], tideF:[], crowdF:[], accessF:[] };
+  filterEls.forEach(el => { if (el.checked) f[el.dataset.k].push(el.value); });
+  return f;
+}
+
+function applyFilters() {
+  const f = getFilters();
+  const visibleLatLngs = [];
+  let n = 0;
+  markers.forEach(m => {
+    const s = m.spot;
+    const keep =
+      f.cat.includes(s.cat) &&
+      f.tideF.includes(s.tideF) &&
+      f.crowdF.includes(s.crowdF) &&
+      f.accessF.includes(s.accessF);
+    if (keep) {
+      if (!map.hasLayer(m)) m.addTo(map);
+      visibleLatLngs.push([s.lat, s.lon]);
+      n++;
+    } else {
+      if (map.hasLayer(m)) map.removeLayer(m);
+    }
+  });
+  // Update route line to only connect visible spots
+  routeLine.setLatLngs(visibleLatLngs);
+  visibleCountEl.textContent = '(' + n + ')';
+  visibleCountPanelEl.textContent = n;
+}
+
+function updateCounts() {
+  ['cat','tideF','crowdF','accessF'].forEach(k => {
+    const values = [...new Set(spots.map(s => s[k]))];
+    values.forEach(v => {
+      const el = document.getElementById('c-' + k + '-' + v);
+      if (el) el.textContent = spots.filter(s => s[k] === v).length;
+    });
+  });
+}
+
+filterEls.forEach(el => el.addEventListener('change', applyFilters));
+document.getElementById('resetBtn').addEventListener('click', () => {
+  filterEls.forEach(el => el.checked = true);
+  applyFilters();
+});
+document.getElementById('filterToggle').addEventListener('click', () => {
+  document.getElementById('filterPanel').classList.toggle('open');
+});
+
+updateCounts();
+applyFilters();
+}
+</script>
+</body>
+</html>
