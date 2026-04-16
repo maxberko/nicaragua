@@ -7,6 +7,7 @@
 <title>Nicaragua Surf Trip — Juillet (Sud→Nord)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="buoys-data.js" onerror="window.BUOY_SNAPSHOT_MISSING=true"></script>
 <style>
   html, body { margin:0; padding:0; height:100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#000; }
   #map { position:absolute; top:0; bottom:0; left:0; right:0; background:#111; }
@@ -108,6 +109,26 @@
   .sidebar .sources { margin-top:14px; padding-top:10px; border-top:1px solid #333; font-size:12px; color:#888; }
   .sidebar .sources a { color:#60a5fa; text-decoration:none; }
   .sidebar .sources a:hover { text-decoration:underline; }
+
+  /* === LIVE BUOY === */
+  .buoy-marker { font-size:22px; line-height:1; text-align:center; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.7)); }
+  .buoy-popup h3 { margin:0 0 4px 0; font-size:14px; color:#0a4a6b; }
+  .buoy-popup .sub-b { font-size:11px; color:#666; margin-bottom:6px; }
+  .buoy-popup .reading { display:grid; grid-template-columns: auto 1fr; gap:3px 10px; font-size:12px; margin:6px 0;}
+  .buoy-popup .reading .k { color:#666; }
+  .buoy-popup .reading .v { font-weight:600; color:#111; }
+  .buoy-popup .age { font-size:11px; color:#888; margin-top:6px; font-style:italic; }
+  .sidebar .buoy-block { background:rgba(96,165,250,0.08); border:1px solid rgba(96,165,250,0.25); border-radius:8px; padding:10px 12px; margin-bottom:14px; }
+  .sidebar .buoy-block h3 { margin:0 0 8px 0; font-size:11px; color:#60a5fa; text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
+  .sidebar .buoy-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin:4px 0; }
+  .sidebar .buoy-cell { text-align:center; padding:4px 2px; }
+  .sidebar .buoy-cell .val { font-size:17px; font-weight:700; color:#fff; line-height:1.2; }
+  .sidebar .buoy-cell .lbl { font-size:10px; color:#888; text-transform:uppercase; letter-spacing:0.4px; margin-top:2px; }
+  .sidebar .buoy-arrow { display:inline-block; transform-origin:center; font-size:14px; color:#60a5fa; }
+  .sidebar .buoy-meta { font-size:11px; color:#888; margin-top:6px; }
+  .sidebar .buoy-block.loading { opacity:0.55; }
+  .sidebar .buoy-block.err    { background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.25); }
+  .sidebar .buoy-block.err h3 { color:#f87171; }
 </style>
 </head>
 <body>
@@ -566,6 +587,7 @@ function openSidebar(idx) {
       '<span class="tag t">' + accessLabelF[s.accessF] + '</span>' +
     '</div>' +
     posNote +
+    buildBuoyBlock(s) +
     '<div class="info-grid">' +
       '<div class="info-row"><span class="label">Taille</span>' + s.size + '</div>' +
       '<div class="info-row"><span class="label">Marée idéale</span>' + s.tide + '</div>' +
@@ -626,6 +648,134 @@ const markers = spots.map((s, idx) => {
 });
 
 map.fitBounds(L.latLngBounds(routeCoords).pad(0.1));
+
+// === LA BOUÉE API — snapshot committed by GitHub Actions (refresh toutes les 30min) ===
+// Doc: https://docs.labouee.app/api-reference/buoys/list-all-buoys  (base réelle: thesurfkit.com/api/v2)
+// Le snapshot est dans buoys-data.js (commit auto par .github/workflows/refresh-buoys.yml)
+
+let buoyData = null;
+let buoyLoadError = null;
+const buoyMarkers = [];
+
+function haversineKm(lat1, lon1, lat2, lon2) {
+  const R = 6371, toRad = x => x * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+function nearestBuoy(lat, lon) {
+  if (!buoyData || !buoyData.buoys.length) return null;
+  let best = null, bestD = Infinity;
+  buoyData.buoys.forEach(b => {
+    const bl = parseFloat(b.lat), bn = parseFloat(b.lng);
+    if (!isFinite(bl) || !isFinite(bn)) return;
+    const d = haversineKm(lat, lon, bl, bn);
+    if (d < bestD) { bestD = d; best = b; }
+  });
+  return best ? { buoy: best, distanceKm: bestD } : null;
+}
+function compassLabel(deg) {
+  const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+  return dirs[Math.round(((deg % 360 + 360) % 360) / 22.5) % 16];
+}
+function ageStr(iso) {
+  const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (mins < 1) return 'à l\'instant';
+  if (mins < 60) return 'il y a ' + mins + ' min';
+  const h = Math.floor(mins/60);
+  if (h < 24) return 'il y a ' + h + ' h';
+  return 'il y a ' + Math.floor(h/24) + ' j';
+}
+function fmtReading(r) {
+  const h = (r && r.significient_height != null) ? r.significient_height.toFixed(2) + ' m' : '—';
+  const p = (r && r.period != null) ? r.period.toFixed(1) + ' s' : '—';
+  const dir = r && r.direction;
+  const dirStr = (dir != null) ? Math.round(dir) + '° ' + compassLabel(dir) : '—';
+  // Flèche: direction de provenance → on fait pointer la flèche "↑" dans la direction de propagation (from+180)
+  const arrow = (dir != null) ? '<span class="buoy-arrow" style="transform:rotate(' + ((dir + 180) % 360) + 'deg);">↑</span>' : '';
+  return { h: h, p: p, dirStr: dirStr, arrow: arrow };
+}
+function buildBuoyBlock(spot) {
+  if (buoyLoadError) {
+    return '<div class="buoy-block err"><h3>🌊 Live swell</h3>' +
+      '<div style="font-size:12px;color:#f87171;">Indisponible : ' + buoyLoadError + '</div></div>';
+  }
+  if (!buoyData) {
+    return '<div class="buoy-block loading"><h3>🌊 Live swell</h3>' +
+      '<div style="font-size:12px;">Chargement des bouées…</div></div>';
+  }
+  const nb = nearestBuoy(spot.lat, spot.lon);
+  if (!nb) return '<div class="buoy-block"><h3>🌊 Live swell</h3>' +
+    '<div style="font-size:12px;">Aucune bouée à proximité.</div></div>';
+  const r = nb.buoy.last_reading || {};
+  const f = fmtReading(r);
+  return '<div class="buoy-block">' +
+    '<h3>🌊 Live swell — bouée ' + nb.buoy.name + ' (' + nb.buoy.source + ')</h3>' +
+    '<div class="buoy-grid">' +
+      '<div class="buoy-cell"><div class="val">' + f.h + '</div><div class="lbl">Hauteur sig.</div></div>' +
+      '<div class="buoy-cell"><div class="val">' + f.p + '</div><div class="lbl">Période</div></div>' +
+      '<div class="buoy-cell"><div class="val">' + f.arrow + ' ' + f.dirStr + '</div><div class="lbl">Direction (from)</div></div>' +
+    '</div>' +
+    '<div class="buoy-meta">À ' + nb.distanceKm.toFixed(0) + ' km · ' +
+      (r.time ? 'lecture ' + ageStr(r.time) : 'pas de donnée') + '</div>' +
+  '</div>';
+}
+function placeBuoyMarkers() {
+  buoyMarkers.forEach(m => map.removeLayer(m));
+  buoyMarkers.length = 0;
+  if (!buoyData) return;
+  buoyData.buoys.forEach(b => {
+    const lat = parseFloat(b.lat), lon = parseFloat(b.lng);
+    if (!isFinite(lat) || !isFinite(lon)) return;
+    const icon = L.divIcon({
+      className: 'buoy-div',
+      html: '<div class="buoy-marker" title="Bouée ' + b.name + '">🌊</div>',
+      iconSize: [26, 26], iconAnchor: [13, 13]
+    });
+    const m = L.marker([lat, lon], { icon, zIndexOffset: -100 });
+    const r = b.last_reading || {};
+    const f = fmtReading(r);
+    m.bindPopup(
+      '<div class="buoy-popup">' +
+      '<h3>Bouée ' + b.name + '</h3>' +
+      '<div class="sub-b">' + b.source + ' · ' + lat.toFixed(3) + ', ' + lon.toFixed(3) + '</div>' +
+      '<div class="reading">' +
+        '<span class="k">Hauteur sig.</span><span class="v">' + f.h + '</span>' +
+        '<span class="k">Période</span><span class="v">' + f.p + '</span>' +
+        '<span class="k">Direction</span><span class="v">' + f.dirStr + '</span>' +
+      '</div>' +
+      (r.time ? '<div class="age">Dernière lecture ' + ageStr(r.time) + '</div>' : '') +
+      '</div>'
+    );
+    m.addTo(map);
+    buoyMarkers.push(m);
+  });
+}
+function refreshOpenSidebar() {
+  if (currentSpotIdx < 0 || !sidebar.classList.contains('open')) return;
+  const block = sidebar.querySelector('.buoy-block');
+  if (!block) return;
+  const tmp = document.createElement('div');
+  tmp.innerHTML = buildBuoyBlock(spots[currentSpotIdx]);
+  block.replaceWith(tmp.firstElementChild);
+}
+(function loadSnapshot() {
+  const snap = window.BUOY_SNAPSHOT;
+  if (window.BUOY_SNAPSHOT_MISSING || !snap) {
+    buoyLoadError = 'snapshot non publié (workflow Actions pas encore run ?)';
+    refreshOpenSidebar();
+    return;
+  }
+  if (snap.status !== 'success') {
+    buoyLoadError = 'snapshot invalide (status=' + snap.status + ')';
+    refreshOpenSidebar();
+    return;
+  }
+  const metaTs = snap.meta && snap.meta.timestamp ? new Date(snap.meta.timestamp) : new Date();
+  buoyData = { buoys: (snap.data && snap.data.buoys) || [], fetchedAt: metaTs };
+  placeBuoyMarkers();
+  refreshOpenSidebar();
+})();
 
 // === FILTER LOGIC ===
 const filterEls = Array.from(document.querySelectorAll('.f'));
