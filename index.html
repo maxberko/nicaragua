@@ -33,6 +33,31 @@
   .filter-panel .reset:hover { background:#333; }
   .filter-panel .visible-count { font-weight:700; color:#ffcc00;}
 
+  /* SEARCH */
+  .search-box { position:absolute; top:10px; right:150px; z-index:1001; width:240px; }
+  .search-box input { width:100%; padding:8px 30px 8px 12px; background:#111; color:#fff; border:1px solid #444; border-radius:6px; font-size:13px; font-weight:500; outline:none; transition:border-color 0.15s; box-sizing:border-box; }
+  .search-box input:focus { border-color:#ffcc00; }
+  .search-box input::placeholder { color:#666; }
+  .search-box .clear { position:absolute; right:6px; top:50%; transform:translateY(-50%); background:none; border:none; color:#666; cursor:pointer; font-size:14px; padding:4px 8px; display:none; }
+  .search-box.has-value .clear { display:block; }
+  .search-box .clear:hover { color:#fff; }
+  .search-results { position:absolute; top:calc(100% + 4px); left:0; right:0; background:rgba(20,20,20,0.96); border:1px solid #333; border-radius:8px; max-height:360px; overflow-y:auto; box-shadow:0 4px 14px rgba(0,0,0,0.5); display:none; }
+  .search-results.open { display:block; }
+  .search-results .result { padding:10px 14px; cursor:pointer; border-bottom:1px solid #222; }
+  .search-results .result:last-child { border-bottom:none; }
+  .search-results .result:hover, .search-results .result.active { background:#222; }
+  .search-results .result-title { font-size:13px; font-weight:600; color:#fff; }
+  .search-results .result-meta { font-size:11px; color:#888; margin-top:2px; }
+  .search-results .result-empty { padding:10px 14px; font-size:13px; color:#888; }
+  @media (max-width: 640px) {
+    .search-box { right:10px; top:52px; width: calc(100% - 20px); max-width:300px; }
+  }
+
+  /* Revealed-despite-filters chip (shown in sidebar when search opens a filtered-out spot) */
+  .sidebar .revealed-chip { background:rgba(255,204,0,0.10); border:1px solid rgba(255,204,0,0.3); border-radius:6px; padding:8px 12px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12px; color:#ffcc00; }
+  .sidebar .revealed-chip button { background:none; border:1px solid rgba(255,204,0,0.5); color:#ffcc00; padding:3px 10px; border-radius:4px; cursor:pointer; font-size:11px; white-space:nowrap; }
+  .sidebar .revealed-chip button:hover { background:rgba(255,204,0,0.2); }
+
   .popup h3 { margin: 0 0 4px 0; font-size: 15px; color:#111; }
   .popup .sub { font-size: 11px; color:#666; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
   .popup .tags { margin: 6px 0 10px 0; display:flex; flex-wrap:wrap; gap:4px;}
@@ -138,6 +163,12 @@
 <div class="title-bar">
   <h1>🏄 Nicaragua Surf Trip — Juillet</h1>
   <p>33 spots du sud au nord. Niveau avancé. Bordure pointillée jaune = position approximative.</p>
+</div>
+
+<div class="search-box" id="searchBox">
+  <input type="text" id="searchInput" placeholder="Chercher un spot…  ( / )" autocomplete="off" spellcheck="false" />
+  <button type="button" class="clear" id="searchClear" title="Effacer (Esc)" tabindex="-1">✕</button>
+  <div class="search-results" id="searchResults"></div>
 </div>
 
 <button class="filter-toggle" id="filterToggle">🔍 Filtres <span class="visible-count" id="visibleCount">(33)</span></button>
@@ -918,6 +949,168 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 });
 document.getElementById('filterToggle').addEventListener('click', () => {
   document.getElementById('filterPanel').classList.toggle('open');
+});
+
+// === SEARCH ===
+const searchBox = document.getElementById('searchBox');
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+const searchResults = document.getElementById('searchResults');
+let searchActiveI = -1; // keyboard nav cursor within current results
+
+function searchNormalize(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+// Match score : start-of-name > in-name > start-of-region > in-region
+function searchScore(spot, q) {
+  const name = searchNormalize(spot.name);
+  const region = searchNormalize(regionLabel[spot.region]);
+  if (name.startsWith(q)) return 3;
+  if (name.includes(q))   return 2;
+  if (region.startsWith(q)) return 1.5;
+  if (region.includes(q))   return 1;
+  return 0;
+}
+
+function searchRun(query) {
+  const q = searchNormalize(query).trim();
+  if (q.length < 2) return [];
+  return spots
+    .map((s, idx) => ({ s, idx, score: searchScore(s, q) }))
+    .filter(r => r.score > 0)
+    .sort((a, b) => b.score - a.score || a.s.name.localeCompare(b.s.name))
+    .slice(0, 8);
+}
+
+function renderSearchResults(results, rawQuery) {
+  searchActiveI = -1;
+  if (!results.length) {
+    searchResults.innerHTML = '<div class="result-empty">Aucun spot pour « ' + rawQuery + ' ».</div>';
+    searchResults.classList.add('open');
+    return;
+  }
+  searchResults.innerHTML = results.map(r => {
+    const s = r.s;
+    return '<div class="result" data-idx="' + r.idx + '">' +
+      '<div class="result-title">' + s.n + '. ' + s.name + '</div>' +
+      '<div class="result-meta">' + regionLabel[s.region] + ' · ' + catLabel[s.cat] + ' · marée ' + tideLabel[s.tideF] + '</div>' +
+    '</div>';
+  }).join('');
+  searchResults.classList.add('open');
+}
+
+function searchGotoSpot(spotIdx) {
+  const s = spots[spotIdx];
+  const m = markers[spotIdx];
+  const wasHidden = !map.hasLayer(m);
+  if (wasHidden) {
+    m.addTo(map); // force-reveal — reste visible jusqu'au prochain applyFilters()
+  }
+  map.flyTo([s.lat, s.lon], 13, { duration: 0.8 });
+  openSidebar(spotIdx);
+  if (wasHidden) injectRevealedChip();
+  // close + blur search
+  searchResults.classList.remove('open');
+  searchInput.blur();
+}
+
+function injectRevealedChip() {
+  // openSidebar vient de réécrire sidebarBody, donc pas de doublon à craindre
+  const chip = document.createElement('div');
+  chip.className = 'revealed-chip';
+  chip.innerHTML = '<span>⚠️ Ce spot est masqué par les filtres actuels.</span>' +
+                   '<button type="button">Réinitialiser</button>';
+  chip.querySelector('button').addEventListener('click', () => {
+    filterEls.forEach(el => el.checked = true);
+    applyFilters();
+    chip.remove();
+  });
+  const sub = sidebarBody.querySelector('.sub');
+  if (sub && sub.nextSibling) sub.parentNode.insertBefore(chip, sub.nextSibling);
+  else sidebarBody.insertBefore(chip, sidebarBody.firstChild);
+}
+
+let searchDebounce;
+searchInput.addEventListener('input', () => {
+  const val = searchInput.value;
+  searchBox.classList.toggle('has-value', val.length > 0);
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => {
+    if (searchNormalize(val).trim().length < 2) {
+      searchResults.classList.remove('open');
+      return;
+    }
+    renderSearchResults(searchRun(val), val.trim());
+  }, 80);
+});
+
+searchInput.addEventListener('focus', () => {
+  if (searchNormalize(searchInput.value).trim().length >= 2) {
+    renderSearchResults(searchRun(searchInput.value), searchInput.value.trim());
+  }
+});
+
+searchInput.addEventListener('blur', () => {
+  // délai pour laisser click sur résultat s'exécuter
+  setTimeout(() => searchResults.classList.remove('open'), 150);
+});
+
+searchInput.addEventListener('keydown', (e) => {
+  const nodes = Array.from(searchResults.querySelectorAll('.result'));
+  if (e.key === 'Escape') {
+    searchInput.value = '';
+    searchBox.classList.remove('has-value');
+    searchResults.classList.remove('open');
+    searchInput.blur();
+    return;
+  }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (!nodes.length) return;
+    searchActiveI = (searchActiveI + 1) % nodes.length;
+    nodes.forEach((n, i) => n.classList.toggle('active', i === searchActiveI));
+    nodes[searchActiveI].scrollIntoView({ block: 'nearest' });
+    return;
+  }
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (!nodes.length) return;
+    searchActiveI = (searchActiveI - 1 + nodes.length) % nodes.length;
+    nodes.forEach((n, i) => n.classList.toggle('active', i === searchActiveI));
+    nodes[searchActiveI].scrollIntoView({ block: 'nearest' });
+    return;
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const target = searchActiveI >= 0 ? nodes[searchActiveI] : nodes[0];
+    if (target) searchGotoSpot(parseInt(target.dataset.idx, 10));
+  }
+});
+
+searchResults.addEventListener('mousedown', (e) => {
+  // mousedown (pas click) pour fire avant le blur du input
+  const r = e.target.closest('.result');
+  if (!r) return;
+  e.preventDefault();
+  searchGotoSpot(parseInt(r.dataset.idx, 10));
+});
+
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  searchBox.classList.remove('has-value');
+  searchResults.classList.remove('open');
+  searchInput.focus();
+});
+
+// Raccourci global « / » pour focus la search (sauf si on tape déjà dans un input)
+document.addEventListener('keydown', (e) => {
+  if (e.key !== '/') return;
+  const a = document.activeElement;
+  if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) return;
+  e.preventDefault();
+  searchInput.focus();
+  searchInput.select();
 });
 
 updateCounts();
