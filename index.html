@@ -21,13 +21,18 @@
   /* FILTER PANEL */
   .filter-toggle { position:absolute; top:10px; right:10px; z-index:1001; background:#111; color:#fff; border:1px solid #444; padding:8px 12px; border-radius:6px; font-size:13px; cursor:pointer; font-weight:600;}
   .filter-toggle:hover { background:#222; }
-  .filter-panel { position:absolute; top:52px; right:10px; z-index:1001; background: rgba(20,20,20,0.94); color:#fff; padding: 14px 16px; border-radius: 8px; font-size: 13px; box-shadow: 0 4px 14px rgba(0,0,0,0.5); width: 240px; display:none;}
+  .filter-panel { position:absolute; top:52px; right:10px; z-index:1001; background: rgba(20,20,20,0.94); color:#fff; padding: 12px 14px; border-radius: 8px; font-size: 13px; box-shadow: 0 4px 14px rgba(0,0,0,0.5); width: 280px; max-height: calc(100vh - 70px); overflow-y: auto; display:none;}
   .filter-panel.open { display:block; }
-  .filter-panel h4 { margin: 10px 0 6px 0; font-size: 12px; color: #ffcc00; text-transform: uppercase; letter-spacing: 0.5px;}
+  .filter-panel h4 { margin: 10px 0 4px 0; font-size: 11px; color: #ffcc00; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;}
   .filter-panel h4:first-child { margin-top:0; }
-  .filter-panel label { display:block; cursor:pointer; padding:3px 0; font-size:13px; user-select:none;}
-  .filter-panel label input { margin-right:6px; vertical-align: middle;}
-  .filter-panel .count { font-size: 11px; opacity:0.55; float:right;}
+  /* Chips layout : inline-flex wrap, compacte verticalement */
+  .filter-panel .chips-row { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; }
+  .filter-panel label { display:inline-flex; align-items:center; cursor:pointer; padding:3px 9px; font-size:11px; user-select:none; border-radius:12px; border:1px solid #3a3a3a; background:transparent; color:#888; transition: all 0.12s; line-height:1.3; }
+  .filter-panel label:hover { border-color:#666; color:#ddd; }
+  .filter-panel label:has(input:checked) { background:rgba(255,204,0,0.16); border-color:#ffcc00; color:#ffe873; font-weight:600; }
+  .filter-panel label input { display:none; }
+  .filter-panel .count { font-size: 10px; opacity:0.55; margin-left:4px; }
+  .filter-panel label:has(input:checked) .count { opacity:0.85; }
   .filter-panel .footer { margin-top:12px; padding-top:10px; border-top:1px solid #333; font-size:12px; display:flex; justify-content:space-between; align-items:center;}
   .filter-panel .reset { background:none; border:1px solid #666; color:#fff; padding:4px 10px; border-radius:4px; cursor:pointer; font-size:11px;}
   .filter-panel .reset:hover { background:#333; }
@@ -183,42 +188,49 @@
 
 <div class="filter-panel" id="filterPanel">
   <h4>Catégorie</h4>
-  <label><input type="checkbox" class="f" data-k="cat" value="beach" checked> Beach-break <span class="count" id="c-cat-beach"></span></label>
+  <div class="chips-row">
+    <label><input type="checkbox" class="f" data-k="cat" value="beach" checked> Beach-break <span class="count" id="c-cat-beach"></span></label>
   <label><input type="checkbox" class="f" data-k="cat" value="reef" checked> Reef <span class="count" id="c-cat-reef"></span></label>
-
-  <h4>Direction</h4>
-  <label><input type="checkbox" class="f" data-k="dir" value="gauche" checked> Gauche <span class="count" id="c-dir-gauche"></span></label>
+  </div>
+<h4>Direction</h4>
+  <div class="chips-row">
+    <label><input type="checkbox" class="f" data-k="dir" value="gauche" checked> Gauche <span class="count" id="c-dir-gauche"></span></label>
   <label><input type="checkbox" class="f" data-k="dir" value="droite" checked> Droite <span class="count" id="c-dir-droite"></span></label>
   <label><input type="checkbox" class="f" data-k="dir" value="a-frame" checked> A-frame <span class="count" id="c-dir-a-frame"></span></label>
-
-  <h4>Type</h4>
-  <label><input type="checkbox" class="f" data-k="type" value="tube" checked> Tube <span class="count" id="c-type-tube"></span></label>
+  </div>
+<h4>Type</h4>
+  <div class="chips-row">
+    <label><input type="checkbox" class="f" data-k="type" value="tube" checked> Tube <span class="count" id="c-type-tube"></span></label>
   <label><input type="checkbox" class="f" data-k="type" value="slab" checked> Slab <span class="count" id="c-type-slab"></span></label>
   <label><input type="checkbox" class="f" data-k="type" value="big-wave" checked> Big-wave <span class="count" id="c-type-big-wave"></span></label>
   <label><input type="checkbox" class="f" data-k="type" value="multi-pic" checked> Multi-pic <span class="count" id="c-type-multi-pic"></span></label>
   <label><input type="checkbox" class="f" data-k="type" value="point-break" checked> Point-break <span class="count" id="c-type-point-break"></span></label>
-
-  <h4>Longueur</h4>
-  <label><input type="checkbox" class="f" data-k="len" value="courte" checked> Courte <span class="count" id="c-len-courte"></span></label>
+  </div>
+<h4>Longueur</h4>
+  <div class="chips-row">
+    <label><input type="checkbox" class="f" data-k="len" value="courte" checked> Courte <span class="count" id="c-len-courte"></span></label>
   <label><input type="checkbox" class="f" data-k="len" value="moyenne" checked> Moyenne <span class="count" id="c-len-moyenne"></span></label>
   <label><input type="checkbox" class="f" data-k="len" value="longue" checked> Longue <span class="count" id="c-len-longue"></span></label>
-
-  <h4>Marée idéale</h4>
-  <label><input type="checkbox" class="f" data-k="tideF" value="basse" checked> Basse <span class="count" id="c-tideF-basse"></span></label>
+  </div>
+<h4>Marée idéale</h4>
+  <div class="chips-row">
+    <label><input type="checkbox" class="f" data-k="tideF" value="basse" checked> Basse <span class="count" id="c-tideF-basse"></span></label>
   <label><input type="checkbox" class="f" data-k="tideF" value="mi" checked> Mi-marée <span class="count" id="c-tideF-mi"></span></label>
   <label><input type="checkbox" class="f" data-k="tideF" value="haute" checked> Haute <span class="count" id="c-tideF-haute"></span></label>
-
-  <h4>Fréquentation</h4>
-  <label><input type="checkbox" class="f" data-k="crowdF" value="basse" checked> Basse <span class="count" id="c-crowdF-basse"></span></label>
+  </div>
+<h4>Fréquentation</h4>
+  <div class="chips-row">
+    <label><input type="checkbox" class="f" data-k="crowdF" value="basse" checked> Basse <span class="count" id="c-crowdF-basse"></span></label>
   <label><input type="checkbox" class="f" data-k="crowdF" value="moyenne" checked> Moyenne <span class="count" id="c-crowdF-moyenne"></span></label>
   <label><input type="checkbox" class="f" data-k="crowdF" value="haute" checked> Haute <span class="count" id="c-crowdF-haute"></span></label>
-
-  <h4>Accès</h4>
-  <label><input type="checkbox" class="f" data-k="accessF" value="facile" checked> Facile (voiture) <span class="count" id="c-accessF-facile"></span></label>
+  </div>
+<h4>Accès</h4>
+  <div class="chips-row">
+    <label><input type="checkbox" class="f" data-k="accessF" value="facile" checked> Facile (voiture) <span class="count" id="c-accessF-facile"></span></label>
   <label><input type="checkbox" class="f" data-k="accessF" value="4x4" checked> 4x4 / piste <span class="count" id="c-accessF-4x4"></span></label>
   <label><input type="checkbox" class="f" data-k="accessF" value="bateau" checked> Bateau <span class="count" id="c-accessF-bateau"></span></label>
-
-  <div class="footer">
+  </div>
+<div class="footer">
     <span><span class="visible-count" id="visibleCountPanel">33</span> / 33 spots</span>
     <button class="reset" id="resetBtn">Tout réinitialiser</button>
   </div>
@@ -235,8 +247,8 @@
 <div class="sidebar" id="sidebar">
   <div class="sidebar-close">
     <div class="sidebar-nav">
-      <button id="prevSpot" title="Spot précédent">‹</button>
-      <button id="nextSpot" title="Spot suivant">›</button>
+      <button id="prevSpot" title="Spot suivant (nord, n+1)">‹</button>
+      <button id="nextSpot" title="Spot précédent (sud, n-1)">›</button>
     </div>
     <button id="closeSidebar">✕ Fermer</button>
   </div>
@@ -727,8 +739,9 @@ function clearFocusedMarkers() {
 }
 
 function updateNav() {
-  document.getElementById('prevSpot').disabled = currentSpotIdx <= 0;
-  document.getElementById('nextSpot').disabled = currentSpotIdx >= spots.length - 1;
+  // ‹ = monte dans le count (idx+1), › = descend (idx-1) — choix géographique Nica
+  document.getElementById('prevSpot').disabled = currentSpotIdx >= spots.length - 1;
+  document.getElementById('nextSpot').disabled = currentSpotIdx <= 0;
 }
 
 function initCarouselDots() {
@@ -751,8 +764,8 @@ document.getElementById('closeSidebar').addEventListener('click', () => {
   sidebar.classList.remove('open');
   clearFocusedMarkers();
 });
-document.getElementById('prevSpot').addEventListener('click', () => { if (currentSpotIdx > 0) openSidebar(currentSpotIdx - 1); });
-document.getElementById('nextSpot').addEventListener('click', () => { if (currentSpotIdx < spots.length - 1) openSidebar(currentSpotIdx + 1); });
+document.getElementById('prevSpot').addEventListener('click', () => { if (currentSpotIdx < spots.length - 1) openSidebar(currentSpotIdx + 1); });
+document.getElementById('nextSpot').addEventListener('click', () => { if (currentSpotIdx > 0) openSidebar(currentSpotIdx - 1); });
 
 // Build markers
 const markers = spots.map((s, idx) => {
