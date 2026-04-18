@@ -598,7 +598,7 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/Worl
 
 const regionLabel = { rivas: 'Rivas', leon: 'León', chinandega: 'Chinandega' };
 const catLabel = { beach: 'Beach-break', reef: 'Reef' };
-const tideLabel = { basse: 'Basse', mi: 'Mi-marée', haute: 'Haute' };
+const tideLabel = { basse: 'Marée basse', mi: 'Mi-marée', haute: 'Marée haute' };
 // Tags + groupe d'appartenance (pour filtering par axe)
 const tagLabel = {
   gauche: 'Gauche', droite: 'Droite', 'a-frame': 'A-frame',
@@ -615,8 +615,8 @@ const crowdLabelF = { basse: 'Fréq. basse', moyenne: 'Fréq. moyenne', haute: '
 const accessLabelF = { facile: 'Accès facile', '4x4': '4x4 / piste', bateau: 'Bateau requis' };
 const posLabel = {
   verified: '✓ Position vérifiée (source cartographique)',
-  offshore: '~ Position calculée par offset depuis repère terrestre vérifié',
-  approx:   '⚠️ Position approximative — source cartographique introuvable'
+  offshore: '~ Position calculée par offset depuis repère terrestre vérifié (zone ~250 m, cercle jaune sur la carte)',
+  approx:   '⚠️ Position approximative — source cartographique introuvable (zone ~500 m, cercle jaune sur la carte)'
 };
 
 const routeCoords = spots.map(s => [s.lat, s.lon]);
@@ -695,6 +695,30 @@ function openSidebar(idx) {
 // Zoom + offset la carte sur le spot sélectionné, avec halo pulsant.
 // Si la sidebar est ouverte, on décale le centre pour que le marker apparaisse
 // dans la zone visible de la carte (à droite du panel gauche).
+// Cercle d'incertitude révélé uniquement au focus pour les spots approx/offshore.
+// Supprimé dès qu'on focus un autre spot ou qu'on ferme la sidebar.
+let uncertaintyCircle = null;
+
+function showUncertaintyCircle(s) {
+  if (uncertaintyCircle) { map.removeLayer(uncertaintyCircle); uncertaintyCircle = null; }
+  if (s.posType !== 'approx' && s.posType !== 'offshore') return;
+  const radius = s.posType === 'offshore' ? 250 : 500; // mètres
+  uncertaintyCircle = L.circle([s.lat, s.lon], {
+    radius,
+    color: '#ffcc00',
+    weight: 2,
+    dashArray: '6 5',
+    opacity: 0.75,
+    fillColor: '#ffcc00',
+    fillOpacity: 0.08,
+    interactive: false,
+  }).addTo(map);
+}
+
+function hideUncertaintyCircle() {
+  if (uncertaintyCircle) { map.removeLayer(uncertaintyCircle); uncertaintyCircle = null; }
+}
+
 function focusOnSpot(idx) {
   const s = spots[idx];
   // Clear focus on all markers, set on this one
@@ -704,6 +728,8 @@ function focusOnSpot(idx) {
     if (!inner) return;
     inner.classList.toggle('focused', i === idx);
   });
+
+  showUncertaintyCircle(s);
 
   // Target zoom : au moins 13, ou +2 si déjà bien zoomé
   const currentZoom = map.getZoom();
@@ -736,6 +762,7 @@ function clearFocusedMarkers() {
     const inner = el && el.querySelector('.marker-num');
     if (inner) inner.classList.remove('focused');
   });
+  hideUncertaintyCircle();
 }
 
 function updateNav() {
