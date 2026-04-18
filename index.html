@@ -668,14 +668,14 @@ function focusOnSpot(idx) {
   const shouldOffset = sidebarOpen && sidebarW > 0 && mapW > sidebarW * 1.5;
 
   if (shouldOffset) {
+    // Sidebar à GAUCHE (0..S) couvre une partie du viewport. Le centre visible
+    // est à (S+W)/2 en screen-x au lieu de W/2. Pour que le marker apparaisse
+    // au centre VISIBLE (et pas au centre ABSOLU de la map, qui est masqué par le panel),
+    // on doit déplacer le centre de la map à GAUCHE du marker de S/2 pixels.
+    // → projected(newCenter) = projected(marker) - [S/2, 0]
     const point = map.project([s.lat, s.lon], targetZoom);
-    // Sidebar à GAUCHE : le centre de la map doit être décalé à DROITE du marker,
-    // donc on pousse le point de center à droite de sidebarW/2 → marker apparaît à gauche du centre virtuel,
-    // ce qui correspond à centre de l'espace à droite de la sidebar.
-    // Simplement : on ajoute sidebarW/2 au x projeté, puis on unproject.
-    const shifted = point.add([sidebarW / 2, 0]);
-    const shiftedLatLng = map.unproject(shifted, targetZoom);
-    map.flyTo(shiftedLatLng, targetZoom, { duration: 0.8 });
+    const newCenter = map.unproject(point.subtract([sidebarW / 2, 0]), targetZoom);
+    map.flyTo(newCenter, targetZoom, { duration: 0.8 });
   } else {
     map.flyTo([s.lat, s.lon], targetZoom, { duration: 0.8 });
   }
